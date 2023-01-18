@@ -3,6 +3,7 @@ import './App.css';
 import AllRoutes from './Pages/AllRoutes';
 import { GlobalStyle } from "./GlobalStyle";
 import { ThemeProvider } from "styled-components";
+import GoToTop from './Components/GoToTop';
 const theme = {
     colors: {
       heading: "rgb(24 24 29)",
@@ -34,6 +35,7 @@ function App() {
     <GlobalStyle/>
       WELCOME
     <AllRoutes/>
+    <GoToTop />
     </div>
     </ThemeProvider>
   );
