@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useProductContext } from "../context/productContext";
 import PageNavigation from "../Components/PageNavigation";
 import MyImage from "../Components/MyImage";
@@ -93,10 +93,10 @@ console.log(singleProduct)
             <hr/>
             <div className="product-data-button">
             <div className="product-button-data">
-              <Button>Add to Cart</Button>
+            <Link to="/cart"><Button>Add to Cart</Button></Link>
             </div>
             <div className="product-button-data">
-              <Button className="Buy-Now">Buy Now</Button>
+            <Link to="/payment"><Button className="Buy-Now">Buy Now</Button></Link>
             </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Button } from "../styles/Button";
 const Product = (curElem) => {
   const { _id, title,brand, images, price, category } = curElem;
@@ -19,8 +19,8 @@ const Product = (curElem) => {
           <p>{title.slice(0,40)}</p>
         </div>
         <div className='cart-data-button'>
-        <Button>Add to Cart</Button>
-        <Button className='cart-data-buy'>Buy now</Button>
+        <Link to="/cart"><Button>Add to Cart</Button></Link>
+        <Link to="/payment"><Button className='cart-data-buy'>Buy now</Button></Link>
         </div>
       </div>
     </NavLink>
