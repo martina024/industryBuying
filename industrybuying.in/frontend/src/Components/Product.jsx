@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import FormatPrice from "../Helpers/FormatPrice";
 import { Button } from "../styles/Button";
 const Product = (curElem) => {
   const { _id, title,brand, images, price, category } = curElem;
@@ -9,15 +8,15 @@ const Product = (curElem) => {
       <div className="card">
         <figure>
           <img src={images[0].image_url} alt={title} />
-          <figcaption className="caption">{category}</figcaption>
+          <figcaption className="caption">{category.slice(0, 10)}</figcaption>
         </figure>
 
         <div className="card-data">
           <div className="card-data-flex">
             <h3>{brand}</h3>
-            <p className="card-data--price">{<FormatPrice price={price} />}</p>
+            <p className="card-data--price">{price}</p>
           </div>
-          <p>{title.slice(0,90)}</p>
+          <p>{title.slice(0,40)}</p>
         </div>
         <div className='cart-data-button'>
         <Button>Add to Cart</Button>
