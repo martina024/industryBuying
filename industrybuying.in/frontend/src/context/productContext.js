@@ -4,13 +4,12 @@ import reducer from "../Reducer/productReducer";
 
 const AppContext = createContext();
 
-const API = "https://api.pujakaitem.com/api/products";
+const API = "https://doubtful-wasp-cowboy-boots.cyclic.app/products";
 
 const initialState = {
   isLoading: false,
   isError: false,
   products: [],
-  featureProducts: [],
   isSingleLoading: false,
   singleProduct: {},
 };
