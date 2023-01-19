@@ -12,7 +12,7 @@ import Star from "../Components/Star";
 import {Button} from '../styles/Button'
 import StaticSingleData from "../Components/StaticSingleData";
 
-const API = "https://api.pujakaitem.com/api/products";
+const API = "https://doubtful-wasp-cowboy-boots.cyclic.app/products";
 
 const SingleProduct = () => {
   const { getSingleProduct, isSingleLoading, singleProduct } =
@@ -30,7 +30,7 @@ const SingleProduct = () => {
     stock,
     stars,
     reviews,
-    image,
+    images,
   } = singleProduct;
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const SingleProduct = () => {
         <div className="grid grid-two-column">
           {/* product Images  */}
           <div className="product_images">
-            <MyImage imgs={image} />
+            <MyImage imgs={images} />
           </div>
 
           {/* product dAta  */}
