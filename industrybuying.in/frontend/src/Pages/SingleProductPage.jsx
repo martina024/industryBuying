@@ -11,7 +11,6 @@ import {Button} from '../styles/Button'
 import StaticSingleData from "../Components/StaticSingleData";
 
 const API = "https://doubtful-wasp-cowboy-boots.cyclic.app/products";
-
 const SingleProduct = () => {
   const { getSingleProduct, isSingleLoading, singleProduct } =
     useProductContext();
@@ -30,7 +29,7 @@ const SingleProduct = () => {
 console.log(singleProduct)
   useEffect(() => {
     getSingleProduct(API);
-  }, []);
+  }, [id]);
 
   if (isSingleLoading) {
     return <div className="page_loading">Loading.....</div>;

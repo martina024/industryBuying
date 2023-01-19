@@ -24,7 +24,7 @@ const FilterSection = () => {
 
   return (
     <Wrapper>
-      {/* <div className="filter-search">
+      <div className="filter-search">
         <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="text"
@@ -34,7 +34,7 @@ const FilterSection = () => {
             onChange={updateFilterValue}
           />
         </form>
-      </div> */}
+      </div>
 
       <div className="filter-category">
         <h3>Category</h3>
