@@ -18,12 +18,12 @@ adminRouter.post("/register" , async(req,res)=>{
          res.send({"message":"This Email  and Store Name already exist"})
     }
 
-    // else if(adminEmail){
-    //     res.send({"message":"This Email is already registered"})
-    // }
-    // else if(adminStoreName){
-    //     res.send({"message":"This Store Name already exist"})
-    // }
+    else if(adminEmail){
+        res.send({"message":"This Email is already registered"})
+    }
+    else if(adminStoreName){
+        res.send({"message":"This Store Name already exist"})
+    }
     else {
 
         try{

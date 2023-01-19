@@ -25,21 +25,7 @@ const authenticate=(req,res,next)=>{
     else{
         next()
     }
-    // else if(req.url == "/products" ){
-    //     if(token){
-    //         const decodedToken=jwt.verify(token,process.env.key)
-    //         if(decodedToken){
-    //             next()
-    //         }
-    //         else{
-    //             res.send("please login first")
-    //         }
-    //     }
-    //     else{
-    //         res.send("please login first")
-    //     }
-    // }
-    
+
 }
 
 module.exports={authenticate}
