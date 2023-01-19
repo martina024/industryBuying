@@ -2,29 +2,7 @@ const filterReducer = (state, action) => {
     switch (action.type) {
       case "LOAD_FILTER_PRODUCTS":
         let priceArr = action.payload.map((curElem) => curElem.price);
-        console.log(
-          "🚀 ~ file: filterReducer.js ~ line 5 ~ filterReducer ~ priceArr",
-          priceArr
-        );
-  
-        // 1way
-        // console.log(Math.max.apply(null, priceArr));
-  
-        // let maxPrice = priceArr.reduce(
-        //   (initialVal, curVal) => Math.max(initialVal, curVal),
-        //   0
-        // );
-        // console.log(
-        //   "🚀 ~ file: filterReducer.js ~ line 16 ~ filterReducer ~ maxPrice",
-        //   maxPrice
-        // );
-  
         let maxPrice = Math.max(...priceArr);
-        console.log(
-          "🚀 ~ file: filterReducer.js ~ line 23 ~ filterReducer ~ maxPrice",
-          maxPrice
-        );
-  
         return {
           ...state,
           filter_products: [...action.payload],
@@ -69,11 +47,11 @@ const filterReducer = (state, action) => {
           }
   
           if (sorting_value === "a-z") {
-            return a.name.localeCompare(b.name);
+            return a.title.localeCompare(b.title);
           }
   
           if (sorting_value === "z-a") {
-            return b.name.localeCompare(a.name);
+            return b.title.localeCompare(a.title);
           }
         };
   
@@ -99,11 +77,11 @@ const filterReducer = (state, action) => {
         let { all_products } = state;
         let tempFilterProduct = [...all_products];
   
-        const { text, category, brand, color, price } = state.filters;
+        const { text, category, brand,price } = state.filters;
   
         if (text) {
           tempFilterProduct = tempFilterProduct.filter((curElem) => {
-            return curElem.name.toLowerCase().includes(text);
+            return curElem.title.toLowerCase().includes(text);
           });
         }
   
@@ -118,13 +96,6 @@ const filterReducer = (state, action) => {
             (curElem) => curElem.brand.toLowerCase() === brand.toLowerCase()
           );
         }
-  
-        if (color !== "all") {
-          tempFilterProduct = tempFilterProduct.filter((curElem) =>
-            curElem.colors.includes(color)
-          );
-        }
-  
         if (price === 0) {
           tempFilterProduct = tempFilterProduct.filter(
             (curElem) => curElem.price === price
