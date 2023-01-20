@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Product = ({_id,images,title,price,category}) => {
   return (
     <>
-      <Card maxW="400px" boxShadow='dark-lg' maxH="600px" key={_id} >
+      <Card maxW="400px" style={{"box-shadow": "rgba(0, 0, 0, 0.24) 0px 3px 8px"}} maxH="600px" key={_id} >
               <CardBody>
                 <Image
                   src={images[0].image_url}
@@ -12,6 +12,7 @@ const Product = ({_id,images,title,price,category}) => {
                   borderRadius="lg"
                   height="200px"
                   widht="100%"
+                  style={{"justifyContent":"center","alignItems":"center"}}
                 />
                 <Stack mt="6" spacing="3">
                   <Heading size="md">{category}</Heading>

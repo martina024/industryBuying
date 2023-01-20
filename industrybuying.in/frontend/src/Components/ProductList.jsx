@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getProducts } from "../Redux/AppReducer/action";
-import { Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import Product from "./Product";
 
 const ProductList = () => {
@@ -12,17 +11,22 @@ const ProductList = () => {
   const [searchParams] = useSearchParams();
   const products = useSelector((store) => store.AppReducer.products);
   const location = useLocation();
-  useEffect(() => {
-    let queryParams;
-    if (location.search || products.length === 0) {
-      queryParams = {
-        params: {
-          category: searchParams.getAll("category"),
-        },
-      };
-    }
-    dispatch(getProducts(queryParams));
-  }, [location.search, dispatch, products.length, searchParams]);
+  // console.log(location)
+  useEffect(()=>{
+      if(location || products.length === 0){
+          const category = searchParams.getAll('category');
+          const Params = {
+              params:{
+                  category:category,
+                  _sort: searchParams.get('sortBy') && "price",
+                  _order: searchParams.get('sortBy')
+              }
+          }
+                
+        dispatch(getProducts(Params))
+      }
+  },[location.search])
+  console.log(products);
   return (
     <>
       {products.length > 0 &&

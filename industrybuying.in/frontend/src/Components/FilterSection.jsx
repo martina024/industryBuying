@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-
+0.
 const FilterSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sortBy, setSortyBy] = useState(searchParams.get("sortBy") || "");
   const [category, setCategory] = useState(searchParams.getAll("category") || []);
 
   const handleChange = (e) => {
@@ -17,16 +18,19 @@ const FilterSection = () => {
     }
     setCategory(newCategory);
   };
-
+  const handleSortBy = (e) => {
+    setSortyBy(e.target.value);
+  };
   useEffect(() => {
-   if(category){
-    setSearchParams({category});
-   }
-  }, [category, setSearchParams]);
+    const params = {};
+    category && (params.category = category);
+    sortBy && (params.sortBy = sortBy);
+    setSearchParams(params);
+  }, [category, setSearchParams, sortBy]);
 console.log(category);
   return (
     <div>
-      <h2>Filter</h2>
+      <h2>CATEGORY</h2>
       <div>
         <input
           type="checkbox"
@@ -72,9 +76,7 @@ console.log(category);
         />
         <label>Electrical</label>
       </div>
-      
-
-      {/* <h2>Sort</h2>
+      <h2>Sort</h2>
       <div onChange={handleSortBy}>
         <div>
           <input
@@ -94,7 +96,7 @@ console.log(category);
           />
           <label>Descending</label>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

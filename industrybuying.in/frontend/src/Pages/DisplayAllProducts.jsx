@@ -9,9 +9,9 @@ const DisplayAllProducts = () => {
         <WrapperFilterSort>
       <FilterSection />
       </WrapperFilterSort>
-      <WrapperMusicAlbums>
+      <WrapperprodcutAlbums>
       <ProductList />
-      </WrapperMusicAlbums>
+      </WrapperprodcutAlbums>
     </Wrapper>
     </div>
   )
@@ -20,19 +20,21 @@ const DisplayAllProducts = () => {
 const Wrapper = styled.div`
 border: ${({color})=> `1px solid ${color}`};
 display:flex;
-min-height:100vh;
+min-height:70vh;
 `
 const WrapperFilterSort = styled.div`
-width:200px;
-border:1px solid red;
+width:300px;
+padding:50px;
+box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 `
-const WrapperMusicAlbums = styled.div`
-border: 1px solid blue;
+const WrapperprodcutAlbums = styled.div`
 width:100%;
 display:grid;
 grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
 justify-content:center;
 grid-gap:10px;
+margin:0;
+padding:0;
 
 `
 
