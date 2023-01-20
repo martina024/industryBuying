@@ -2,16 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProducts } from "../Redux/AppReducer/action";
 import styled from "styled-components";
 import { Container } from "../styles/Container";
-import { MdSecurity } from "react-icons/md";
-import { TbTruckDelivery, TbReplace } from "react-icons/tb";
 
 import StaticSingleData from "../Components/StaticSingleData";
 import PageNavigation from "./PageNavigation";
-import { Card, CardBody, CardFooter, Heading, Image, Stack, Text,Button } from "@chakra-ui/react";
+import { Card, CardBody, Heading, Image, Stack, Text,Button } from "@chakra-ui/react";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -72,17 +70,20 @@ const SingleProduct = () => {
                 Price: ${currentProduct.price}
               </Heading>
             </CardBody>
-
+             
               <Button variant="solid" colorScheme="blue" size='lg'>
-                Buy Now
+              <Link to="/payment"> Buy Now</Link>
               </Button>
+              
+              
             <Button variant="solid" colorScheme="blue" size='lg'
               bgGradient='linear(to-r, teal.500, green.500)'
               _hover={{
                 bgGradient: 'linear(to-r, red.500, yellow.500)',
               }}>
-                Add to Card
+                <Link to="/cart">Add to Card</Link>
               </Button>
+              
           </Stack>
         </Card>
         <StaticSingleData />

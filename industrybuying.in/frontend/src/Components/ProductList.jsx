@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getProducts } from "../Redux/AppReducer/action";
-
+import { Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import Product from "./Product";
 
 const ProductList = () => {
@@ -28,7 +28,7 @@ const ProductList = () => {
       {products.length > 0 &&
         products.map((preeti) => {
           return (
-            <div key={preeti.id} style={{ width: "310px" }}>
+            <div key={preeti._id} style={{ width: "310px" }}>
                 <Link to={`/product/${preeti._id}`}>
                   <Product {...preeti} />
                 </Link>
