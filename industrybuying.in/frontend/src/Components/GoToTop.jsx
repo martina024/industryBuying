@@ -37,12 +37,11 @@ display:flex;
 justify-content:center;
 align-items:center;
 .top-btn{
-    font-size:2.4rem;
-    width:6rem;
-    height:6rem;
+    font-size:2rem;
+    width:3rem;
+    height:3rem;
     color:#fff;
     background-color:grey;
-    box-shadow:${({theme})=>theme.colors.shadow};
     border-radius:10%;
     position:fixed;
     bottom:5rem;

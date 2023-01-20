@@ -19,7 +19,7 @@ import {
 const StaticSingleData = () => {
   return (
     <>
-      <Tabs variant="enclosed">
+      <Tabs variant="enclosed" bgColor="whiteAlpha.900">
         <TabList>
           <Tab fontSize={["2xl", "3xl", "4xl"]}>DESCRIPTION</Tab>
           <Tab fontSize={["2xl", "3xl", "4xl"]}>SPECIFICATION</Tab>

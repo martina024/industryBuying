@@ -1,30 +1,45 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Button } from "../styles/Button";
-const Product = (curElem) => {
-  const { _id, title,brand, images, price, category } = curElem;
+import React from 'react'
+import { Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Link } from 'react-router-dom';
+const Product = ({_id,images,title,price,category}) => {
   return (
-    <NavLink to={`/product/${_id}`}>
-      <div className="card">
-        <figure>
-          <img src={images[0].image_url} alt={title} />
-          <figcaption className="caption">{category.slice(0, 10)}</figcaption>
-        </figure>
+    <>
+      <Card maxW="400px" boxShadow='dark-lg' maxH="600px" key={_id} >
+              <CardBody>
+                <Image
+                  src={images[0].image_url}
+                  alt="Green double couch with wooden legs"
+                  borderRadius="lg"
+                  height="200px"
+                  widht="100%"
+                />
+                <Stack mt="6" spacing="3">
+                  <Heading size="md">{category}</Heading>
+                  <Text>
+                   {title.slice(0, 60)}
+                  </Text>
+                  <Text color="blue.600" fontSize="2xl">
+                    ${price}
+                  </Text>
+                </Stack>
+              </CardBody>
+              <Divider />
+              <CardFooter>
+                <ButtonGroup spacing="2">
+                <Link to="/payment"><Button variant="solid" colorScheme="blue">
+                    Buy now
+                  </Button>
+                  </Link>
+                  <Link to="/cart">
+                  <Button variant="ghost" colorScheme="blue">
+                    Add to cart
+                  </Button>
+                  </Link>
+                </ButtonGroup>
+              </CardFooter>
+            </Card>
+    </>
+  )
+}
 
-        <div className="card-data">
-          <div className="card-data-flex">
-            <h3>{brand}</h3>
-            <p className="card-data--price">{price}</p>
-          </div>
-          <p>{title.slice(0,40)}</p>
-        </div>
-        <div className='cart-data-button'>
-        <Link to="/cart"><Button>Add to Cart</Button></Link>
-        <Link to="/payment"><Button className='cart-data-buy'>Buy now</Button></Link>
-        </div>
-      </div>
-    </NavLink>
-  );
-};
-
-export default Product;
+export default Product

@@ -1,106 +1,90 @@
-import { useEffect } from "react";
+/** @format */
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getProducts } from "../Redux/AppReducer/action";
 import styled from "styled-components";
-import { Link, useParams } from "react-router-dom";
-import { useProductContext } from "../context/productContext";
-import PageNavigation from "../Components/PageNavigation";
-import MyImage from "../Components/MyImage";
 import { Container } from "../styles/Container";
 import { MdSecurity } from "react-icons/md";
 import { TbTruckDelivery, TbReplace } from "react-icons/tb";
-import {Button} from '../styles/Button'
+
 import StaticSingleData from "../Components/StaticSingleData";
+import PageNavigation from "./PageNavigation";
+import { Card, CardBody, CardFooter, Heading, Image, Stack, Text,Button } from "@chakra-ui/react";
 
-const API = "https://doubtful-wasp-cowboy-boots.cyclic.app/products";
 const SingleProduct = () => {
-  const { getSingleProduct, isSingleLoading, singleProduct } =
-    useProductContext();
-
   const { id } = useParams();
-
-  const {
-    id: alias,
-    title,
-    images,
-    brand,
-    category,
-    sub_category,
-    price
-  } = singleProduct;
-console.log(singleProduct)
+  const products = useSelector((store) => store.AppReducer.products);
+  const [currentProduct, setCurrentProduct] = useState({});
+  const dispatch = useDispatch();
   useEffect(() => {
-    getSingleProduct(API);
-  }, [id]);
-
-  if (isSingleLoading) {
-    return <div className="page_loading">Loading.....</div>;
-  }
+    if (products.length === 0) {
+      dispatch(getProducts());
+    }
+  });
+  useEffect(() => {
+    if (id) {
+      const Product = products.find((item) => item._id === id);
+      console.log(Product);
+      Product && setCurrentProduct(Product);
+    }
+  }, [id, products]);
+  console.log(currentProduct);
+  //  const image = currentProduct.images;
+  //  console.log(image);
 
   return (
     <Wrapper>
-      <PageNavigation title={title} />
+      <PageNavigation title={currentProduct.brand} />
       <Container className="container">
-        <div className="grid grid-two-column">
-          {/* product Images  */}
-          <div className="product_images">
-            <MyImage imgs={images} />
-          </div>
+        <Card
+          direction={{ base: "column", sm: "row" }}
+          overflow="hidden"
+          variant="outline"
+          bgGradient="grey.600">
+            
+          <Image
+            objectFit="cover"
+            maxW={{ base: "100%", sm: "500px" }}
+            src="https://static1.industrybuying.com/products/agriculture-garden-landscaping/grain-processing-machine/AGR.GRA.52125501_1668012170997.webp"
+            alt="Caffe Latte"
+            maxH={{base:"100%"}}
+          />
 
-          {/* product dAta  */}
-          <div className="product-data">
-            <h2 className="product-name">{brand}</h2>
-            <p className="product-data-price">
-              MRP:{price}
-             
-            </p>
-            <p className="product-data-price product-data-real-price">
-              Sub-Category: {sub_category}
-            </p>
-            <p>{title}</p>
-            <div className="product-data-warranty">
-              <div className="product-warranty-data">
-                <TbTruckDelivery className="warranty-icon" />
-                <p>Free Delivery</p>
-              </div>
+          <Stack>
+            <CardBody>
+              <Heading size="2xl">Brand : {currentProduct.brand}</Heading>
+               <br/>
+              <Text fontSize='2xl'>
+                <b>Title:</b> {currentProduct.title}
+              </Text>
+              <br/>
+              <Text  fontSize='2xl'>
+              <b>Category:</b> {currentProduct.category}
+              </Text>
+              <br/>
+              <Text fontSize='2xl'>
+              <b> Sub_category:</b> {currentProduct.sub_category}
+              </Text>
+              <br/>
+              <Heading size="xl">
+                Price: ${currentProduct.price}
+              </Heading>
+            </CardBody>
 
-              <div className="product-warranty-data">
-                <TbReplace className="warranty-icon" />
-                <p>30 Days Replacement</p>
-              </div>
-
-              <div className="product-warranty-data">
-                <TbTruckDelivery className="warranty-icon" />
-                <p>IndustriEase Delivered </p>
-              </div>
-
-              <div className="product-warranty-data">
-                <MdSecurity className="warranty-icon" />
-                <p>2 Year Warranty </p>
-              </div>
-            </div>
-
-            <div className="product-data-info">
-              <p>
-                Category:
-                <span> {category}</span>
-              </p>
-              <p>
-                ID : <span> {id} </span>
-              </p>
-              <p>
-                Brand :<span> {brand} </span>
-              </p>
-            </div>
-            <hr/>
-            <div className="product-data-button">
-            <div className="product-button-data">
-            <Link to="/cart"><Button>Add to Cart</Button></Link>
-            </div>
-            <div className="product-button-data">
-            <Link to="/payment"><Button className="Buy-Now">Buy Now</Button></Link>
-            </div>
-            </div>
-          </div>
-        </div>
+              <Button variant="solid" colorScheme="blue" size='lg'>
+                Buy Now
+              </Button>
+            <Button variant="solid" colorScheme="blue" size='lg'
+              bgGradient='linear(to-r, teal.500, green.500)'
+              _hover={{
+                bgGradient: 'linear(to-r, red.500, yellow.500)',
+              }}>
+                Add to Card
+              </Button>
+          </Stack>
+        </Card>
         <StaticSingleData />
       </Container>
     </Wrapper>
@@ -108,22 +92,24 @@ console.log(singleProduct)
 };
 
 const Wrapper = styled.section`
+background:rgb(243,243,243);
+  padding:0 100px;
   .container {
-    padding: 3rem 0;
+    padding: 1rem 0;
   }
-  .product_images{
-    display:flex;
-    align-items:center;
+  .product_images {
+    display: flex;
+    align-items: center;
   }
   .product-data {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    text-align:left;
+    text-align: left;
     gap: 2rem;
-    .product-name{
-    font-size:24px;
+    .product-name {
+      font-size: 24px;
     }
     .product-data-warranty {
       width: 100%;
@@ -151,7 +137,7 @@ const Wrapper = styled.section`
       font-weight: bold;
     }
     .product-data-real-price {
-      color: ${({ theme }) => theme.colors.btn};
+      color: blue;
     }
     .product-data-info {
       display: flex;
@@ -162,7 +148,7 @@ const Wrapper = styled.section`
         font-weight: bold;
       }
     }
-    
+
     hr {
       max-width: 100%;
       width: 90%;
@@ -170,18 +156,18 @@ const Wrapper = styled.section`
       border: 0.1rem solid #000;
       color: red;
     }
-   
+
     .product-data-button {
       width: 60%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
-      font-size:1.5rem;
+      font-size: 1.5rem;
       .product-button-data {
         text-align: center;
-        .Buy-Now{
-          background-color:rgb(249,135,0)
+        .Buy-Now {
+          background-color: rgb(249, 135, 0);
         }
       }
     }
@@ -191,7 +177,7 @@ const Wrapper = styled.section`
     justify-content: center;
     align-items: center;
   }
-  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+  @media (max-width: 360px) {
     padding: 0 2.4rem;
     .product-data-button {
       width: 100%;
@@ -199,12 +185,12 @@ const Wrapper = styled.section`
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
-      gap:20px;
-      font-size:1.5rem;
+      gap: 20px;
+      font-size: 1.5rem;
       .product-button-data {
         text-align: center;
-        .Buy-Now{
-          background-color:rgb(249,135,0)
+        .Buy-Now {
+          background-color: rgb(249, 135, 0);
         }
       }
     }
