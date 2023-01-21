@@ -1,5 +1,6 @@
 // suvam pages------------->
-
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -8,13 +9,11 @@ import {
   Image,
   Text,
   Button,
-  useToast,
   Input,
   HStack,
   Link,
   Modal,
   ModalBody,
-  ModalFooter,
   ModalContent,
   ModalCloseButton,
   ModalOverlay,
@@ -23,9 +22,10 @@ import {
   Collapse,
   Badge,
   Flex,
+  useToast,
+  Progress,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
-
 const data = [
   {
     id: 1,
@@ -61,14 +61,13 @@ const CartPage = () => {
   const [Cart_Data, set_Cart_Data] = useState(data);
   const [pin, setPin] = useState("");
   const toast = useToast();
-  const [err, setError] = useState("");
+  const [error, setError] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [total, settotal] = useState(0);
-  const [show, setShow] = React.useState(false);
-
+  const [coupon, setcoupon] = useState("");
+  const [couponCount, setcouponCount] = useState(0);
+  const navigate = useNavigate();
   // colapse function for price details
-  const handleToggle = () => setShow(!show);
-
   //   const Get_All_Cart_Data = () => {
   //     fetch(`https://api.pujakaitem.com/api/products`).then((res) =>
   //       res.json().then((res) => {
@@ -77,10 +76,9 @@ const CartPage = () => {
   //     );
   //   };
   const handleTotal = () => {
-    console.log("hhh");
     let Total = 0;
-    data.map((ele) => {
-      let addgst = (ele.Price / 100) * ele.GST;
+    Cart_Data.map((ele) => {
+      let addgst = (ele.Price / 100) * 18;
       let singleprice = addgst + ele.Price;
       Total += Math.floor(singleprice * ele.Quantity);
     });
@@ -93,7 +91,7 @@ const CartPage = () => {
   const handleDecrease = (item) => {
     if (item.Quantity > 1) {
       let newdata = Cart_Data.map((ele) => {
-        if (ele.id == item.id) {
+        if (ele.id === item.id) {
           return { ...ele, Quantity: ele.Quantity - 1 };
         } else return ele;
       });
@@ -108,10 +106,11 @@ const CartPage = () => {
       });
     }
   };
+  console.log(total);
   const handleIncrease = (item) => {
     if (item.Quantity < 5) {
       let newdata = Cart_Data.map((ele) => {
-        if (ele.id == item.id) {
+        if (ele.id === item.id) {
           return { ...ele, Quantity: ele.Quantity + 1 };
         } else return ele;
       });
@@ -126,17 +125,57 @@ const CartPage = () => {
       });
     }
   };
-  const findDelivery = () => {};
+  const findDelivery = () => {
+    let length = pin.length;
+    if (length === 6) {
+      setError("");
+    } else if (length < 6) {
+      setError("Please enter valid 6-digit pincode.");
+    }
+  };
   const handleRemove = (item) => {
     const removedata = Cart_Data.filter((ele) => ele.id !== item.id);
     set_Cart_Data(removedata);
   };
-  //   useEffect(() => {
-  //     Get_All_Cart_Data();
-  //   }, []);
+  const handleRedirected = () => {
+    navigate("/cart/checkout");
+  };
+  const handleDiscount = () => {
+    if (couponCount == 1) {
+      toast({
+        title: "Offers",
+        description: "Coupon Already Applied.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else if (
+      (coupon == "DUBAM300" && couponCount == 0) ||
+      (coupon == "APP300" && couponCount == 0)
+    ) {
+      setcouponCount(1);
+      settotal((tota) => tota - 300);
+      toast({
+        title: "Offers",
+        description: "Coupon Added Succesfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Quantity",
+        description: "Enter Valid Coupon.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
   return (
     <>
       <Box
+        fontFamily={"Open Sans Bold"}
         w="100%"
         h="50px"
         border={"1px solid"}
@@ -146,41 +185,87 @@ const CartPage = () => {
         zIndex="20"
       ></Box>
       <Box>
-        <Box display="flex" ml="10px" mt="70px">
-          Total:{total}
-          <Text>My Cart({data.length}items)</Text>
+        <Box
+          display="flex"
+          w="67%"
+          h="50px"
+          alignItems={"center"}
+          borderBottom={"0.5px solid RGBA(0, 0, 0, 0.08)"}
+          borderTop="0.5px solid RGBA(0, 0, 0, 0.08)"
+          ml="10px"
+          mt="70px"
+        >
+          {/* cart page startting from here */}
+          <Text fontWeight={"semibold"} fontSize={"20px"}>
+            My Cart
+          </Text>
+          <Text w="70px">({data.length}items)</Text>
         </Box>
+
         <Box display="flex" mb="30px">
-          <Box
-            style={{ height: "500px", overflowY: "scroll" }}
-            w="70%"
-            m="10px"
-          >
+          <Box w="70%">
             <Box
-              justifyContent="space-between"
-              display="flex"
-              w="100%"
-              px="50px"
-              py="10px"
-              bgColor="#F5F5F5"
-              m="auto"
+              style={{ height: "500px", overflowY: "scroll" }}
+              w="98%"
+              m="10px"
             >
-              <Text>Item</Text>
-              <Text>Quantity</Text>
-              <Text>Price (Inclusive of GST)</Text>
+              <Box
+                justifyContent="space-between"
+                display="flex"
+                w="100%"
+                px="50px"
+                py="10px"
+                bgColor="#F5F5F5"
+                m="auto"
+              >
+                <Text>Item</Text>
+                <Text>Quantity</Text>
+                <Text>Price (Inclusive of GST)</Text>
+              </Box>
+              {/*  mapping all the cart data */}
+              {Cart_Data.map((item, index) => (
+                <div key={item.id}>
+                  <SingleItem
+                    key={item.id}
+                    item={item}
+                    handleDecrease={handleDecrease}
+                    handleIncrease={handleIncrease}
+                    handleRemove={handleRemove}
+                  />
+                  <Divider />
+                </div>
+              ))}
             </Box>
-            {Cart_Data.map((item, index) => (
-              <div key={item.id}>
-                <SingleItem
-                  key={item.id}
-                  item={item}
-                  handleDecrease={handleDecrease}
-                  handleIncrease={handleIncrease}
-                  handleRemove={handleRemove}
-                />
-                <Divider />
-              </div>
-            ))}
+            <Box
+              w="98%"
+              alignItems={"center"}
+              h="70px"
+              display="flex"
+              m="auto"
+              boxShadow="rgba(0, 0, 0, 0.35) 0px 5px 15px"
+              justifyContent={"space-between"}
+              px="20px"
+            >
+              <Button
+                h="46px"
+                borderRadius={0}
+                bgColor={"white"}
+                boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+              >
+                + CONTINUE SHOPPING
+              </Button>
+              <Button
+                h="45px"
+                _hover={{ backgroundColor: "#fb8339", color: "grey" }}
+                color="white"
+                borderRadius={0}
+                px="30px"
+                bgColor="#fb8339"
+                onClick={handleRedirected}
+              >
+                PLACE ORDER
+              </Button>
+            </Box>
           </Box>
           <VStack w="30%" my="10px" mx="10px">
             <Box
@@ -213,6 +298,14 @@ const CartPage = () => {
                   src="https://www.industrybuying.com/static/desktop-payment/assets/svg/rupee-circle-icon.svg"
                 />
               </Box>
+              <Text
+                color="RGBA(0, 0, 0, 0.48)"
+                pl="20px"
+                pb="10px"
+                textAlign={"left"}
+              >
+                Estimate shipping charges
+              </Text>
               <HStack px="20px" w="100%">
                 <Input
                   fontSize={"12px"}
@@ -232,6 +325,70 @@ const CartPage = () => {
                   CHECK
                 </Button>
               </HStack>
+              <Text
+                pl="20px"
+                fontSize={"13px"}
+                color="#de2511"
+                py="3px"
+                textAlign={"left"}
+              >
+                {error}
+              </Text>
+              {!error ? (
+                <VStack>
+                  <Box
+                    display={"flex"}
+                    h="30px"
+                    justifyContent="space-between"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                  >
+                    <Text>Subtotal:Rs.</Text>
+                    <Text>{total.toLocaleString()}</Text>
+                  </Box>
+                  <Box
+                    display={"flex"}
+                    justifyContent="space-between"
+                    h="30px"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                  >
+                    <Text>Shipping Charges</Text>
+                    <Text color="#3da73a">FREE</Text>
+                  </Box>
+                  <Box
+                    fontWeight={"bold"}
+                    display={"flex"}
+                    h="30px"
+                    justifyContent="space-between"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                    fontSize={"20px"}
+                  >
+                    <Text>Total Price</Text>
+                    <Text color="#e45301">{total.toLocaleString()}</Text>
+                  </Box>
+                  <HStack
+                    w="100%"
+                    px="10px"
+                    mt="10px"
+                    borderTop={"0.5px solid RGBA(0, 0, 0, 0.36)"}
+                  >
+                    <Image
+                      w="30px"
+                      h="30px"
+                      src="https://www.industrybuying.com/static/desktop-payment/assets/svg/delivery-truck.svg"
+                      alt="Free Shipping"
+                    />
+                    <Text color={"grey"} fontSize="12px">
+                      Shipping charges applicable as per your pincode {pin}
+                    </Text>
+                  </HStack>
+                </VStack>
+              ) : null}
             </Box>
             {/* Partner offer section */}
             <Box
@@ -328,6 +485,8 @@ const CartPage = () => {
                   w="100%"
                   placeholder="ENTER YOUR PINCODE"
                   _hover={{ border: "none" }}
+                  value={coupon}
+                  onChange={(e) => setcoupon(e.target.value)}
                 />
                 <Link
                   as={Link}
@@ -336,7 +495,7 @@ const CartPage = () => {
                   color="#fb8869"
                   verticalAlign="middle"
                   zIndex="20"
-                  onClick={findDelivery}
+                  onClick={() => handleDiscount()}
                 >
                   Apply
                 </Link>
@@ -348,19 +507,11 @@ const CartPage = () => {
               alignItems="flex-start"
               w="100%"
               pl="10px"
-              h="200px"
+              h="100px"
               fontSize={"14px"}
               overflowY="scroll"
               scrollPadding={"10px"}
               scrollbarColor="white blue"
-              sx={{
-                '&::-webkit-scrollbar': {
-                  width: '10px',
-                },
-                '&::-webkit-scrollbar-track': {
-                  width: '6px',
-                }
-              }}
             >
               <Box>
                 <Box display={"flex"}>
@@ -374,7 +525,9 @@ const CartPage = () => {
                 </Box>
                 <Flex w="100%" justifyContent={"space-between"}>
                   <Text>DUBAM300</Text>
-                  <Link color={"#E53E3E"}>Apply Now</Link>
+                  <Link onClick={() => setcoupon("DUBAM300")} color={"#E53E3E"}>
+                    Apply Now
+                  </Link>
                 </Flex>
                 <Flex mt="20px" w="100%" justifyContent={"space-between"}>
                   <h6>Get Flat Rs. 300 Off.</h6>
@@ -394,7 +547,9 @@ const CartPage = () => {
                 </Box>
                 <Flex w="100%" justifyContent={"space-between"}>
                   <Text>APP300</Text>
-                  <Link color={"#E53E3E"}>Apply Now</Link>
+                  <Link onClick={() => setcoupon("APP300")} color={"#E53E3E"}>
+                    Apply Now
+                  </Link>
                 </Flex>
               </Box>
               <Flex w="100%" mt="20px" justifyContent={"space-between"}>
@@ -408,15 +563,10 @@ const CartPage = () => {
     </>
   );
 };
-
 export default CartPage;
 
 const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
-  const [Cart_Data, set_Cart_Data] = useState(data);
-  const [pin, setPin] = useState("");
   const toast = useToast();
-  const [err, setError] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [show, setShow] = React.useState(true);
   const totalPrice = (item) => {
     let tax = Math.floor(item.Price / 100) * 18;
@@ -436,7 +586,6 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
         fontSize="15px"
         display="flex"
         pl="10px"
-        
       >
         {item.Description}
       </Text>
@@ -467,32 +616,38 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
               pl="0px"
               bg="white"
               color="blue.300"
+              _hover={{ backgroundColor: "background", color: "blue.400" }}
               onClick={() => handleRemove(item)}
             >
-              <DeleteIcon color="grey" />
+              <DeleteIcon color="blue.300" />
               Remove
             </Button>
           </Box>
         </Box>
         <div
           style={{
-            width: "60px",
+            width: "70px",
             display: "flex",
-            height: "40px",
+            height: "33px",
+            color: "grey",
+            alignItems: "center",
+            border: "0.5px solid RGBA(0, 0, 0, 0.16)",
           }}
         >
           <button
             style={{
-              width: "30px",
+              alignItems: "center",
+              fontSize: "18px",
               height: "30px",
-              fontSize: "20px",
+              margin: "auto",
+
               backgroundColor: "white",
-              borderLeft: "o.5px solid",
+              borderRight: "0.5px solid RGBA(0, 0, 0, 0.16)",
               cursor: "pointer",
             }}
             onClick={() => handleDecrease(item)}
           >
-            -
+            <MinusIcon py="1" />
           </button>
           <input
             type="text"
@@ -502,25 +657,27 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
               height: "30px",
               fontSize: "20px",
               textAlign: "center",
+              margin: "auto",
             }}
           />
           <button
             style={{
-              width: "30px",
-              height: "30px",
-              fontSize: "20px",
+              alignItems: "center",
+              fontSize: "18px",
               backgroundColor: "white",
               border: "none",
+              borderLeft: "0.5px solid RGBA(0, 0, 0, 0.16)",
               cursor: "pointer",
+              margin: "auto",
             }}
             onClick={() => handleIncrease(item)}
           >
-            +
+            <AddIcon py="1" />
           </button>
         </div>
         <Box w="30%">
           <HStack w="50%" m="auto" justifyContent={"space-between"}>
-            <span>RS:{totalPrice(item).total}</span>
+            <span>RS:{totalPrice(item).total.toLocaleString()}</span>
             <Button
               fontSize={"14px"}
               color="#4299E1"
@@ -564,7 +721,7 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
             >
               <Box display="flex" w="95%" justifyContent="space-between">
                 <span> Price Rs.</span>
-                <span>{item.Price}</span>
+                <span>{item.Price.toLocaleString()}</span>
               </Box>
               <Box
                 display="flex"
@@ -573,8 +730,7 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
                 m="auto"
               >
                 <span> GST@{item.GST}%</span>
-
-                <span>+Rs.{totalPrice(item).tax}</span>
+                <span>+Rs.{totalPrice(item).tax.toLocaleString()}</span>
               </Box>
               <Box
                 display="flex"
@@ -583,7 +739,7 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
                 m="auto"
               >
                 <span>Final Price</span>
-                <span>{totalPrice(item).total}</span>
+                <span>{totalPrice(item).total.toLocaleString()}</span>
               </Box>
             </VStack>
           </Collapse>
@@ -674,3 +830,4 @@ function OverlayModel({ isOpen, onClose }) {
     </>
   );
 }
+
