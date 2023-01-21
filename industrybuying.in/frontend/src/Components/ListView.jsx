@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import FormatPrice from "../Helpers/FormatPrice";
 import { Button } from "../styles/Button";
 
 const ListView = ({ products }) => {
@@ -12,13 +11,13 @@ const ListView = ({ products }) => {
           return (
             <div className="card grid grid-two-column">
               <figure>
-                <img src={images} alt={category} />
+                <img src={images[0].image_url} alt={category} />
               </figure>
 
               <div className="card-data">
                 <h3>{brand}</h3>
                 <p>
-                  <FormatPrice price={price} />
+                  {price}
                 </p>
                 <p>{title.slice(0, 90)}...</p>
 

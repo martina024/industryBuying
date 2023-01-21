@@ -6,7 +6,7 @@ const DisplayAllProducts = () => {
   return (
     <Wrapper>
     <div className="container grid grid-filter-column">
-      <div>
+      <div className="grid-filter-row">
         <FilterSection />
       </div>
 
@@ -25,7 +25,11 @@ const DisplayAllProducts = () => {
 
 const Wrapper = styled.section`
   .grid-filter-column {
-    grid-template-columns: 0.2fr 1fr;
+    grid-template-columns: 0.5fr 2fr;
+   
+    .grid-filter-row{
+      padding:2rem;
+    }
   }
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     .grid-filter-column {

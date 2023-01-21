@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import { useFilterContext } from "../context/filter_context";
-import { FaCheck } from "react-icons/fa";
-import FormatPrice from "../Helpers/FormatPrice";
 import { Button } from "../styles/Button";
 
 const FilterSection = () => {
   const {
-    filters: { text, category, color, price, maxPrice, minPrice },
+    filters: { text, category,price, maxPrice, minPrice },
     updateFilterValue,
     all_products,
     clearFilters,
@@ -17,27 +15,16 @@ const FilterSection = () => {
     let newVal = data.map((curElem) => {
       return curElem[attr];
     });
-
-    if (attr === "colors") {
-      // return (newVal = ["All", ...new Set([].concat(...newVal))]);
-      newVal = newVal.flat();
-    }
-
     return (newVal = ["all", ...new Set(newVal)]);
   };
 
   // we need to have the individual data of each in an array format
   const categoryData = getUniqueData(all_products, "category");
   const companyData = getUniqueData(all_products, "brand");
-  const colorsData = getUniqueData(all_products, "colors");
-  // console.log(
-  //   "🚀 ~ file: FilterSection.js ~ line 23 ~ FilterSection ~ companyData",
-  //   colorsData
-  // );
 
   return (
     <Wrapper>
-      <div className="filter-search">
+      {/* <div className="filter-search">
         <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="text"
@@ -47,7 +34,7 @@ const FilterSection = () => {
             onChange={updateFilterValue}
           />
         </form>
-      </div>
+      </div> */}
 
       <div className="filter-category">
         <h3>Category</h3>
@@ -69,7 +56,7 @@ const FilterSection = () => {
       </div>
 
       <div className="filter-company">
-        <h3>brand</h3>
+        <h3>Brand</h3>
 
         <form action="#">
           <select
@@ -87,45 +74,10 @@ const FilterSection = () => {
           </select>
         </form>
       </div>
-
-      <div className="filter-colors colors">
-        <h3>Colors</h3>
-
-        <div className="filter-color-style">
-          {colorsData.map((curColor, index) => {
-            if (curColor === "all") {
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  value={curColor}
-                  name="color"
-                  className="color-all--style"
-                  onClick={updateFilterValue}>
-                  all
-                </button>
-              );
-            }
-            return (
-              <button
-                key={index}
-                type="button"
-                value={curColor}
-                name="color"
-                style={{ backgroundColor: curColor }}
-                className={color === curColor ? "btnStyle active" : "btnStyle"}
-                onClick={updateFilterValue}>
-                {color === curColor ? <FaCheck className="checkStyle" /> : null}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       <div className="filter_price">
         <h3>Price</h3>
         <p>
-          <FormatPrice price={price} />
+        {price}
         </p>
         <input
           type="range"
@@ -151,7 +103,7 @@ const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   gap: 3rem;
-
+  text-align:left;
   h3 {
     padding: 2rem 0;
     font-size: bold;
@@ -172,12 +124,15 @@ const Wrapper = styled.section`
       align-items: flex-start;
       gap: 1.4rem;
       font-size:1.5rem;
+      
       button {
         border: none;
         background-color: ${({ theme }) => theme.colors.white};
         text-transform: capitalize;
         cursor: pointer;
-
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        padding:1rem;
+        text-align:left;
         &:hover {
           color: ${({ theme }) => theme.colors.btn};
         }
