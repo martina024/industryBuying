@@ -842,3 +842,15 @@ function OverlayModel({ isOpen, onClose }) {
     </>
   );
 }
+const EmptyCart=()=>{
+  const navigate=useNavigate()
+  return(
+    <Box h="400px" w="100%" m="auto" boxShadow="rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;">
+
+      <Box style={{borderTop:"2px solid black",borderBottom:"2px solid black"}} w="100%" h="40px" ></Box>
+<Text>Shopping cart is empty!</Text>
+<Box m="auto" w="140px"><Button>Go To Products</Button></Box>
+<Box style={{borderTop:"2px solid black",borderBottom:"2px solid black"}} w="100%" h="40px" ></Box>
+    </Box>
+  )
+}
