@@ -573,6 +573,22 @@ productsRouter.patch("/quantity/:id",async(req,res)=>{
    
 })
 
+// cart
+
+productsRouter.get("/cart",async(req,res)=>{
+    
+    try {
+        const product=await ProductModel.find({"quantity":{$gt:0}})
+        console.log(product)
+        res.send(product)
+    
+    } 
+    catch (err) {
+        console.log(err)
+        res.send({"message":"Something went wrong"})
+    }
+})
+
 
 module.exports={productsRouter}
 
