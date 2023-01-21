@@ -1,14 +1,14 @@
 // suvam pages------------->
-
-import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import {
   Box,
   VStack,
   Divider,
   Image,
-  Text, Button,
-  useToast,
+  Text,
+  Button,
   Input,
   HStack,
   Link,
@@ -22,9 +22,10 @@ import {
   Collapse,
   Badge,
   Flex,
+  useToast,
+  Progress,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
-
 const data = [
   {
     id: 1,
@@ -64,7 +65,8 @@ const CartPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [total, settotal] = useState(0);
   const [coupon, setcoupon] = useState("");
-
+  const [couponCount, setcouponCount] = useState(0);
+  const navigate = useNavigate();
   // colapse function for price details
   //   const Get_All_Cart_Data = () => {
   //     fetch(`https://api.pujakaitem.com/api/products`).then((res) =>
@@ -73,7 +75,6 @@ const CartPage = () => {
   //       })
   //     );
   //   };
-
   const handleTotal = () => {
     let Total = 0;
     Cart_Data.map((ele) => {
@@ -83,7 +84,6 @@ const CartPage = () => {
     });
     settotal(Total);
   };
-
   useEffect(() => {
     handleTotal();
   }, [Cart_Data]);
@@ -125,7 +125,6 @@ const CartPage = () => {
       });
     }
   };
-
   const findDelivery = () => {
     let length = pin.length;
     if (length === 6) {
@@ -138,9 +137,41 @@ const CartPage = () => {
     const removedata = Cart_Data.filter((ele) => ele.id !== item.id);
     set_Cart_Data(removedata);
   };
-  //   useEffect(() => {
-  //     Get_All_Cart_Data();
-  //   }, []);
+  const handleRedirected = () => {
+    navigate("/cart/checkout");
+  };
+  const handleDiscount = () => {
+    if (couponCount == 1) {
+      toast({
+        title: "Offers",
+        description: "Coupon Already Applied.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else if (
+      (coupon == "DUBAM300" && couponCount == 0) ||
+      (coupon == "APP300" && couponCount == 0)
+    ) {
+      setcouponCount(1);
+      settotal((tota) => tota - 300);
+      toast({
+        title: "Offers",
+        description: "Coupon Added Succesfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Quantity",
+        description: "Enter Valid Coupon.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
   return (
     <>
       <Box
@@ -164,8 +195,7 @@ const CartPage = () => {
           ml="10px"
           mt="70px"
         >
-          {/* Total:{total} */}
-
+          {/* cart page startting from here */}
           <Text fontWeight={"semibold"} fontSize={"20px"}>
             My Cart
           </Text>
@@ -192,6 +222,7 @@ const CartPage = () => {
                 <Text>Quantity</Text>
                 <Text>Price (Inclusive of GST)</Text>
               </Box>
+              {/*  mapping all the cart data */}
               {Cart_Data.map((item, index) => (
                 <div key={item.id}>
                   <SingleItem
@@ -230,6 +261,7 @@ const CartPage = () => {
                 borderRadius={0}
                 px="30px"
                 bgColor="#fb8339"
+                onClick={handleRedirected}
               >
                 PLACE ORDER
               </Button>
@@ -266,7 +298,12 @@ const CartPage = () => {
                   src="https://www.industrybuying.com/static/desktop-payment/assets/svg/rupee-circle-icon.svg"
                 />
               </Box>
-              <Text   color="RGBA(0, 0, 0, 0.48)"pl="20px" pb="10px" textAlign={"left"}>
+              <Text
+                color="RGBA(0, 0, 0, 0.48)"
+                pl="20px"
+                pb="10px"
+                textAlign={"left"}
+              >
                 Estimate shipping charges
               </Text>
               <HStack px="20px" w="100%">
@@ -289,62 +326,69 @@ const CartPage = () => {
                 </Button>
               </HStack>
               <Text
-                  pl="20px"
-                  fontSize={"13px"}
-                  color="#de2511"
-                  py="3px"
-                  textAlign={"left"}
-                >
-                  {error}
-                </Text>
-            {!error?  <VStack>
-               
-                <Box
-                  display={"flex"}
-                  h="30px"
-                  justifyContent="space-between"
-                  w="90%"
-                  margin="auto"
-                  py="20px"
-                >
-                  <Text>Subtotal:Rs.</Text>
-                  <Text>{total.toLocaleString()}</Text>
-                </Box>
-                <Box
-                  display={"flex"}
-                  justifyContent="space-between"
-                  h="30px"
-                  w="90%"
-                  margin="auto"
-                  py="20px"
-                >
-                  <Text>Shipping Charges</Text>
-                  <Text  color="#3da73a">FREE</Text>
-                </Box>
-                <Box
-                fontWeight={"bold"}
-                  display={"flex"}
-                  h="30px"
-                  justifyContent="space-between"
-                  w="90%"
-                  margin="auto"
-                  py="20px"
-                  fontSize={"20px"}
-                >
-                  <Text >Total Price</Text>
-                  <Text color="#e45301" >{total.toLocaleString()}</Text>
-                </Box>
-                <HStack w="100%" px="10px"mt="10px" borderTop={"0.5px solid RGBA(0, 0, 0, 0.36)"}>
-            <Image
-              w="30px"
-              h="30px"
-              src="https://www.industrybuying.com/static/desktop-payment/assets/svg/delivery-truck.svg"
-              alt="Free Shipping"
-
-            />
-            <Text color={"grey"}  fontSize="12px">Shipping charges applicable as per your pincode {pin}</Text>
-          </HStack>
-              </VStack>:null}
+                pl="20px"
+                fontSize={"13px"}
+                color="#de2511"
+                py="3px"
+                textAlign={"left"}
+              >
+                {error}
+              </Text>
+              {!error ? (
+                <VStack>
+                  <Box
+                    display={"flex"}
+                    h="30px"
+                    justifyContent="space-between"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                  >
+                    <Text>Subtotal:Rs.</Text>
+                    <Text>{total.toLocaleString()}</Text>
+                  </Box>
+                  <Box
+                    display={"flex"}
+                    justifyContent="space-between"
+                    h="30px"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                  >
+                    <Text>Shipping Charges</Text>
+                    <Text color="#3da73a">FREE</Text>
+                  </Box>
+                  <Box
+                    fontWeight={"bold"}
+                    display={"flex"}
+                    h="30px"
+                    justifyContent="space-between"
+                    w="90%"
+                    margin="auto"
+                    py="20px"
+                    fontSize={"20px"}
+                  >
+                    <Text>Total Price</Text>
+                    <Text color="#e45301">{total.toLocaleString()}</Text>
+                  </Box>
+                  <HStack
+                    w="100%"
+                    px="10px"
+                    mt="10px"
+                    borderTop={"0.5px solid RGBA(0, 0, 0, 0.36)"}
+                  >
+                    <Image
+                      w="30px"
+                      h="30px"
+                      src="https://www.industrybuying.com/static/desktop-payment/assets/svg/delivery-truck.svg"
+                      alt="Free Shipping"
+                    />
+                    <Text color={"grey"} fontSize="12px">
+                      Shipping charges applicable as per your pincode {pin}
+                    </Text>
+                  </HStack>
+                </VStack>
+              ) : null}
             </Box>
             {/* Partner offer section */}
             <Box
@@ -451,7 +495,7 @@ const CartPage = () => {
                   color="#fb8869"
                   verticalAlign="middle"
                   zIndex="20"
-                 
+                  onClick={() => handleDiscount()}
                 >
                   Apply
                 </Link>
@@ -603,7 +647,6 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
             }}
             onClick={() => handleDecrease(item)}
           >
-
             <MinusIcon py="1" />
           </button>
           <input
@@ -787,80 +830,4 @@ function OverlayModel({ isOpen, onClose }) {
     </>
   );
 }
-function Checkout() {
-  const [formData, setFormData] = useState({
-    pincode: '',
-    mobile: '',
-    alternateMobile: '',
-    name: '',
-    address: '',
-    city: '',
-    state: '',
-    landmark: '',
-    area:'',
-    flat:"",
 
-    businessLicense: '',
-    primary: false,
-  });
-
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value
-    });
-  }
-
-  const handleCheckboxChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.checked
-    });
-  }
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData);
-    // Perform form submission logic here, such as sending data to an API or server
-  }
-
-  return (
-
-    <Box>
-    <Box display={"flex"} ml="30px" backgroundColor={"#fafafa"} boxShadow= "2px 2px 0 #e3e3e3" w="70%" >
-    <form style={{width:"44%",lineHeight:3}} onSubmit={handleSubmit}>
-      
-        <Input borderRadius={"0"}  type="text" name="pincode" placeholder='Pincode' value={formData.pincode} onChange={handleChange} />
-    
-        <Input borderRadius={"0"}  type="text" name="mobile" placeholder='Mobile' value={formData.mobile} onChange={handleChange} />
-        <Input borderRadius={"0"}  placeholder='Alternate Mobile:'  type="text" name="alternateMobile" value={formData.alternateMobile} onChange={handleChange} />
-        <Input borderRadius={"0"}  type="text" name="name" placeholder='Name:' value={formData.name} onChange={handleChange} />
-      
-        <Input borderRadius={"0"}  placeholder="Flat, House no., Building, Company, Apartment" type="text" name="flat" value={formData.address} onChange={handleChange} />
-       
-        <Input borderRadius={"0"}  placeholder=' Area, Street, Sector, Village(optional)' type="text" name="area" value={formData.city} onChange={handleChange} />
-        <Input borderRadius={"0"}  placeholder='City:' type="text" name="city" value={formData.city} onChange={handleChange} />
-        <Input borderRadius={"0"}  type="text"  placeholder='State:' name="state" value={formData.state} onChange={handleChange} />
-        <Input borderRadius={"0"}  type="text" name="landmark" placeholder='Landmark:' value={formData.landmark} onChange={handleChange} />
-      <br />
-      <Button type="submit" w="140px">Submit</Button>
-    </form>
-<Box pt="20px" mx="10px" mt="4px" backgroundColor={"#fafafa"} borderLeft="3px solid #e45301" boxShadow= "2px 2px 0 #e3e3e3" px="30px" fontFamily="Open Sans Light" h="379px"  w="48%" textAlign={"left"}>
-<Link borderRight={"1px solid #666"} borderBottom="1px solid #666" borderTop={"1px solid #666"} px="4px" py="3px"  > <ArrowLeftIcon mr="10px"/>Back to Saved Address</Link>
-<Box >
-<Text my="10px" color="#666">Why Accurate address is important?</Text>
-<p style={{color:"grey",fontSize:"14px"}}>Make sure you get your products on time. If the address is not entered correctly, your package may be returned undelivered. You will then have to place new order. Save time and avoid frustration by entering the address information in appropriate boxes and double checking for typos and other errors.</p>
-
-<Text my="10px" color="#666">A properly filled delivery information helps us in two ways:</Text>
-<Text mt="10px" color={"gray"}>1.It helps us deliver you the product(s) on time without any delay</Text>
-<Text color={"gray"}>2.It saves a lot of time & effort spent by our delivery team to identify your address.</Text>
-</Box>
-<Box mt="30px" border={"1px solid #666"} w="200px" px="1">
-<Text>For help please contact us on</Text>
-<Text>Call us on : +91 8448449073</Text>
-</Box>
-</Box>
-    </Box>
-    </Box>
-    )}
-    export {Checkout}
