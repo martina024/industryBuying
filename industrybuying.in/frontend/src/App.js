@@ -32,10 +32,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
-    <GlobalStyle/>
-      WELCOME
+    {/* <GlobalStyle/> */}
     <AllRoutes/>
-    <GoToTop />
+    {/* <GoToTop /> */}
     </div>
     </ThemeProvider>
   );
