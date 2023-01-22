@@ -1,5 +1,6 @@
-import React from 'react'
-
+import { Box, Button, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 const AdminDashboard = () => {
   const [products, setproducts] = useState([]);
   const toast=useToast()
@@ -10,18 +11,26 @@ const AdminDashboard = () => {
     title: "",
     images: [],
   });
-
   const handleSubmit=()=>{
+    const token = JSON.parse(localStorage.getItem("token")) || ""
+
+        const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
+        
     if( data.price>0&&
       data.brand!==""&&
       data.category!==""&&
       data.title!==""&&data.images!==[]){
-// axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products`,data,{ 
-// headers:{
-//   Authorization:localStorage.getItem("token"),
-//      gstIN:item.GST
-// },
-//  }).then((res)=>{
+        
+          axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
+         headers: {
+           Authorization: 'Bearer'+" "+token,
+           GSTIN: GSTIN
+         }
+        })
+          .then(res=>{
+            console.log(res.data)
+            // navigate("/cart")
+    
         toast({
           title: "Add Data",
           description: "Product Added Succesfully",
@@ -30,13 +39,7 @@ const AdminDashboard = () => {
           duration: 2000,
           isClosable: true,
         });
-      // })
-        setdata({
-          price: 0,
-          brand: "",
-          category: "",
-          title: "",
-          images: [],})
+      })
       }else {
         toast({
           title: "Add Data",
@@ -68,25 +71,29 @@ const AdminDashboard = () => {
     // console.log(res.data.data.data);
   };
   const handleDelete=(item)=>{
-//     console.log(item)
-//   axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${}`,{
- 
-// headers:{
-//   Authorization:localStorage.getItem("token"),
-    //  gstIN:item.GST
-// },
-//  }).then((res)=>{
-//    toast({
-//     title: "Delete Data",
-//     description: "Product Delete Succesfully",
-//     status: "success",
-//     position: "top",
-//     duration: 2000,
-//     isClosable: true,
-//   });
-//    })
+    const token = JSON.parse(localStorage.getItem("token")) || ""
+    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
+      axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,{
+     headers: {
+       Authorization: 'Bearer'+" "+token,
+       GSTIN: GSTIN
+     }
+    })
+      .then(res=>{
+           toast({
+            title: "Delete Data",
+            description: "Product Delete Succesfully",
+            status: "success",
+            position: "top",
+            duration: 2000,
+            isClosable: true,
+          });
+      })
+      .catch(err=>console.log(err))
+
   }
-  const handleUpdate=()=>{}
+  const handleUpdate=()=>{
+  }
   useEffect(() => {
     Get_All_Cart_Data();
   }, []);
