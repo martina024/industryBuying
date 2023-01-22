@@ -25,7 +25,6 @@ import {
 import { SingleItem } from "./CartPage";
 import axios from "axios";
 
-
 function CheckoutPage() {
   const [Cart_Data, set_Cart_Data] = useState([]);
   const [total, settotal] = useState(0);
@@ -63,7 +62,6 @@ function CheckoutPage() {
     ).then((res)=>{
    set_Cart_Data(res.data)
       console.log(res);
-
     })
    
   };
