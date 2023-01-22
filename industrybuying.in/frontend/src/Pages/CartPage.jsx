@@ -41,19 +41,17 @@ const CartPage = () => {
   // colapse function for price details
   const Get_All_Cart_Data = async () => {
     // console.log("data")
-    let res = await axios.get(
-      `https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`
-    ).then((res)=>{
-   set_Cart_Data(res.data)
-      console.log(res);
-
-    })
-   
+    let res = await axios
+      .get(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`)
+      .then((res) => {
+        set_Cart_Data(res.data);
+        console.log(res);
+      });
   };
-  useEffect(() => { 
+  useEffect(() => {
     Get_All_Cart_Data();
   }, []);
- 
+
   const handleTotal = () => {
     let Total = 0;
     Cart_Data.map((ele) => {
@@ -68,15 +66,33 @@ const CartPage = () => {
   }, [Cart_Data]);
 
   const handleDecrease = (item) => {
+    const token = JSON.parse(localStorage.getItem("token")) || "";
+    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || "";
     if (item.quantity > 1) {
       let newdata = Cart_Data.map((ele) => {
         if (ele._id === item._id) {
           return { ...ele, quantity: ele.quantity - 1 };
         } else return ele;
       });
+      axios
+      .patch(
+        `https://doubtful-wasp-cowboy-boots.cyclic.app/products/quantity/${item.id}`,
+        item,
+        {
+          headers: {
+            Authorization: "Bearer" + " " + token,
+            GSTIN: GSTIN,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
       set_Cart_Data(newdata);
     } else {
-
       toast({
         title: "Quantity",
         description: "Minimum Quantity Is 1.",
@@ -86,15 +102,34 @@ const CartPage = () => {
       });
     }
   };
-
-  console.log(total);
   const handleIncrease = (item) => {
+    const token = JSON.parse(localStorage.getItem("token")) || "";
+    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || "";
     if (item.quantity < 5) {
       let newdata = Cart_Data.map((ele) => {
         if (ele._id === item._id) {
           return { ...ele, quantity: ele.quantity + 1 };
-        } else return ele;
+        } else {
+          return ele;
+        }
       });
+      axios
+        .patch(
+          `https://doubtful-wasp-cowboy-boots.cyclic.app/products/quantity/${item.id}`,
+          item,
+          {
+            headers: {
+              Authorization: "Bearer" + " " + token,
+              GSTIN: GSTIN,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       set_Cart_Data(newdata);
     } else {
       toast({
@@ -115,32 +150,34 @@ const CartPage = () => {
     }
   };
   const handleRemove = (item) => {
-    const token = JSON.parse(localStorage.getItem("token")) || ""
-    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
+    const token = JSON.parse(localStorage.getItem("token")) || "";
+    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || "";
     const removedata = Cart_Data.filter((ele) => ele._id !== item._id);
     set_Cart_Data(removedata);
-        axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,{
-       headers: {
-         Authorization: 'Bearer'+" "+token,
-         GSTIN: GSTIN
-       }
+    axios
+      .delete(
+        `https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,
+        {
+          headers: {
+            Authorization: "Bearer" + " " + token,
+            GSTIN: GSTIN,
+          },
+        }
+      )
+      .then((res) => {
+        toast({
+          title: "Remove Data",
+          description: "Remove Succesfully",
+          status: "success",
+          position: "top",
+          duration: 2000,
+          isClosable: true,
+        });
       })
-        .then(res=>{
-             toast({
-              title: "Remove Data",
-              description: "Remove Succesfully",
-              status: "success",
-              position: "top",
-              duration: 2000,
-              isClosable: true,
-            });
-        })
-        .catch(err=>console.log(err))
+      .catch((err) => console.log(err));
   };
   const handleRedirected = () => {
-   
-    navigate('/cart/checkout');
-
+    navigate("/cart/checkout");
   };
   const handleDiscount = () => {
     if (couponCount == 1) {
@@ -586,7 +623,7 @@ export const SingleItem = ({
         display="flex"
         pl="10px"
       >
-      {item.title}
+        {item.title}
       </Text>
 
       <Box display="flex" w="95%" justifyContent="space-between" m="auto">
@@ -606,21 +643,23 @@ export const SingleItem = ({
             <Text> Brand:{item.brand}</Text>
             <Text> category:{item.category}</Text>
             {/* <Text> {item.Spindle_Speed}</Text> */}
-           {!dd ?<Button
-              style={{
-                textAlign: "left",
-                display: "flex",
-                fontSize: "13px",
-              }}
-              pl="0px"
-              bg="white"
-              color="blue.300"
-              _hover={{ backgroundColor: "background", color: "blue.400" }}
-              onClick={() => handleRemove(item)}
-            >
-              <DeleteIcon color="blue.300" />
-              Remove
-            </Button>:null}
+            {!dd ? (
+              <Button
+                style={{
+                  textAlign: "left",
+                  display: "flex",
+                  fontSize: "13px",
+                }}
+                pl="0px"
+                bg="white"
+                color="blue.300"
+                _hover={{ backgroundColor: "background", color: "blue.400" }}
+                onClick={() => handleRemove(item)}
+              >
+                <DeleteIcon color="blue.300" />
+                Remove
+              </Button>
+            ) : null}
           </Box>
         </Box>
         {dd ? null : (
