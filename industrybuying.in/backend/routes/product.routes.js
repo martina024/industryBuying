@@ -16,7 +16,8 @@ productsRouter.get("/",async(req,res)=>{
     
     console.log(req.query)
     
-    if(search && page && sortby){
+    if(search && page && sortby && order){
+       
         try{
             if(sortby=="title"){
                 if(order=="asc"){
@@ -90,7 +91,9 @@ productsRouter.get("/",async(req,res)=>{
             }
 
             else if(sortby=="price"){
+                
                 if(order=="asc"){
+                  
                     if(limit){
                         const products=await ProductModel.find({
     
@@ -170,6 +173,7 @@ productsRouter.get("/",async(req,res)=>{
     }
   
     else if(search && page){
+       
         if(limit){
             try{
                 const products=await ProductModel.find({
@@ -215,7 +219,8 @@ productsRouter.get("/",async(req,res)=>{
         }
     }
 
-    else if(sortby=="title" && page){
+    else if(sortby=="title" && page && order){
+      
         if(order =="asc"){
            
 
@@ -282,14 +287,16 @@ productsRouter.get("/",async(req,res)=>{
     }
 
 
-    else if(sortby=="price" && page){
+    else if(sortby=="price" && page && order){
+        
+       
         if(order =="asc"){
            
 
                 if(limit){
                     try{
                         const products=await ProductModel.find().sort({"price":1}).skip((page -1)*limit).limit(limit)
-                        console.log(products)
+                        // console.log(products)
                         res.send(products)
                     }
                     catch(err){
@@ -351,7 +358,7 @@ productsRouter.get("/",async(req,res)=>{
     
 
     else if(sortby=="title" && order){
-       
+        
         try{
             if(order=="asc"){
             const products=await ProductModel.find().sort({"title":1})
@@ -371,7 +378,7 @@ productsRouter.get("/",async(req,res)=>{
 
 
     else if(sortby=="price" && order){
-       
+        
         try{
             if(order=="asc"){
             const products=await ProductModel.find().sort({"price":1})
@@ -391,6 +398,7 @@ productsRouter.get("/",async(req,res)=>{
 
 
     else if(search){
+        
         try{
         
         const products=await ProductModel.find({
@@ -413,6 +421,7 @@ productsRouter.get("/",async(req,res)=>{
     }
 
     else if(page){
+       
         try{
            if(limit){
             const products=await ProductModel.find().skip((page -1)*limit).limit(limit)
@@ -429,7 +438,9 @@ productsRouter.get("/",async(req,res)=>{
             res.send({"message":"Something went wrong"})
         }
     }
+
     else if(filterby=="price"){
+        
         try{
             if(lt){
                 const products=await ProductModel.find({price:{$lte:lt}})
@@ -448,6 +459,7 @@ productsRouter.get("/",async(req,res)=>{
         }
     }
     else if(filterby=="brand" && value){
+        
         try{
             
                 const products=await ProductModel.find({"brand":value})
@@ -460,6 +472,7 @@ productsRouter.get("/",async(req,res)=>{
         }
     }
     else if(filterby=="category" && value){
+       
         try{
             
                 const products=await ProductModel.find({"category":value})
@@ -472,6 +485,7 @@ productsRouter.get("/",async(req,res)=>{
         }
     }
     else if(filterby=="sub_category" && value){
+        
         try{
             
                 const products=await ProductModel.find({"sub_category":value})
@@ -484,6 +498,7 @@ productsRouter.get("/",async(req,res)=>{
         }
     }
     else{
+       
         try{
         
             const products=await ProductModel.find()
@@ -550,7 +565,40 @@ productsRouter.delete("/delete/:id",async(req,res)=>{
 })
 
 
+// cart
+
+productsRouter.get("/cart",async(req,res)=>{
+    console.log(req, "am")
+    try {
+        const product=await ProductModel.find({"quantity":{$gt:0}})
+        console.log(product)
+        res.send(product)
+    
+    } 
+    catch (err) {
+        console.log(err)
+        res.send({"message":"Something went wrong"})
+    }
+})
+
+
 // USER PRODUCT ROUTE FOR QUANTITY
+
+
+productsRouter.get("/:id", async(req,res) => {
+    
+    console.log("am")
+    try {
+        const productID = req.params.id
+        const products = await ProductModel.findById({_id:productID})
+        res.send(products)
+    } 
+    
+    catch (err) {
+        console.log(err)
+            res.send({"message":"Something Went Wrong, Try After Sometime"})
+    }
+})
 
 
 productsRouter.patch("/quantity/:id",async(req,res)=>{
@@ -573,21 +621,7 @@ productsRouter.patch("/quantity/:id",async(req,res)=>{
    
 })
 
-// cart
 
-productsRouter.get("/cart",async(req,res)=>{
-    
-    try {
-        const product=await ProductModel.find({"quantity":{$gt:0}})
-        console.log(product)
-        res.send(product)
-    
-    } 
-    catch (err) {
-        console.log(err)
-        res.send({"message":"Something went wrong"})
-    }
-})
 
 
 module.exports={productsRouter}
