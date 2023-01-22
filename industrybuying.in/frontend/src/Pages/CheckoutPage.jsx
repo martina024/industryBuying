@@ -20,51 +20,14 @@ import {
   Grid,
   GridItem,
   Divider,
+  Select,
 } from "@chakra-ui/react";
 import { SingleItem } from "./CartPage";
-const data = [
-  {
-    brand: "GBC",
-    category: "Office Supplies",
-    images: [
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-    ],
-    price: 288000,
-    quantity: 1,
-    sub_category: "Binding & Lamination",
-    title: "GBC 1712000 A4 2 Roller Laminating Machine",
-    _id: "63c7de1b68241ad103d4a7f9",
-  },
-  {
-    brand: "GBC",
-    category: "Office Supplies",
-    images: [
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-      {
-        image_url:
-          "https://static1.industrybuying.com/products/office…ting-machines/OFF.LAM.87761716_1672925934608.webp",
-      },
-    ],
-    price: 288000,
-    quantity: 1,
-    sub_category: "Binding & Lamination",
-    title: "GBC 1712000 A4 2 Roller Laminating Machine",
-    _id: "6877878789",
-  },
-];
+import axios from "axios";
+
 
 function CheckoutPage() {
-  const [Cart_Data, set_Cart_Data] = useState(data);
+  const [Cart_Data, set_Cart_Data] = useState([]);
   const [total, settotal] = useState(0);
   const [progress, setprogress] = useState(33.33);
   const [termserror, settermserror] = useState(false);
@@ -93,9 +56,26 @@ function CheckoutPage() {
     });
     settotal(Total);
   };
+  const Get_All_Cart_Data = async () => {
+    // console.log("data")
+    let res = await axios.get(
+      `https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`
+    ).then((res)=>{
+   set_Cart_Data(res.data)
+      console.log(res);
+
+    })
+   
+  };
+  useEffect(() => { 
+    Get_All_Cart_Data();
+  }, []);
+ 
   useEffect(() => {
     handleTotal();
   }, [Cart_Data]);
+
+
 
   const handleChange = (event) => {
     setFormData({
@@ -113,13 +93,13 @@ function CheckoutPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (formData.terms == false) {
-        toast({
-          title: "Alert----.",
-          description: "Please Accept Terms And Conditions.",
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
+      toast({
+        title: "Alert----.",
+        description: "Please Accept Terms And Conditions.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     } else {
       toast({
         title: "Adress.",
@@ -317,6 +297,7 @@ function CheckoutPage() {
             setStep={setStep}
           />
         ) : (
+
           <CheckForm2 setprogress={setprogress} setStep={setStep} />
         )}
       </Box>
@@ -417,7 +398,9 @@ const CheckForm1 = ({ setStep, setprogress, Cart_Data }) => {
   };
   return (
     <>
-      <Text margin={"auto"} display="flex" w="200px" my="30px">Product Preview</Text>
+      <Text margin={"auto"} display="flex" w="200px" my="30px">
+        Product Preview
+      </Text>
       <Box>
         {Cart_Data.map((item, index) => (
           <div key={item.id}>
@@ -443,7 +426,7 @@ const CheckForm2 = ({ setprogress, setStep }) => {
   const [cvv, setcvv] = useState("");
   const [date, setdate] = useState("");
   const [error, seterrr] = useState({ err1: true, err2: true, err3: true });
-  const toast=useToast()
+  const toast = useToast();
   const handle1 = () => {
     setStep((stp) => stp - 1);
     setprogress((prog) => prog - 33.33);

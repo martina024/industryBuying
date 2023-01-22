@@ -26,48 +26,9 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import axios from "axios";
-const data = [
-  {
-    brand: "GBC",
-    category: "Office Supplies",
-    images: [
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-    ],
-    price: 288000,
-    quantity: 1,
-    sub_category: "Binding & Lamination",
-    title: "GBC 1712000 A4 2 Roller Laminating Machine",
-    _id: "63c7de1b68241ad103d4a7f9",
-  },
-  {
-    brand: "GBC",
-    category: "Office Supplies",
-    images: [
-      {
-        image_url:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-      },
-      {
-        image_url:
-          "https://static1.industrybuying.com/products/office…ting-machines/OFF.LAM.87761716_1672925934608.webp",
-      },
-    ],
-    price: 288000,
-    quantity: 1,
-    sub_category: "Binding & Lamination",
-    title: "GBC 1712000 A4 2 Roller Laminating Machine",
-    _id: "6877878789",
-  },
-];
+
 const CartPage = () => {
-  const [Cart_Data, set_Cart_Data] = useState(data);
+  const [Cart_Data, set_Cart_Data] = useState([]);
   const [pin, setPin] = useState("");
   const toast = useToast();
   const [error, setError] = useState("");
@@ -81,12 +42,18 @@ const CartPage = () => {
   const Get_All_Cart_Data = async () => {
     // console.log("data")
     let res = await axios.get(
-      `https://doubtful-wasp-cowboy-boots.cyclic.app/products`
-    );
-    console.log(res);
+      `https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`
+    ).then((res)=>{
+   set_Cart_Data(res.data)
+      console.log(res);
+
+    })
+   
   };
-  useEffect(() => {}, []);
-  Get_All_Cart_Data();
+  useEffect(() => { 
+    Get_All_Cart_Data();
+  }, []);
+ 
   const handleTotal = () => {
     let Total = 0;
     Cart_Data.map((ele) => {
@@ -109,6 +76,7 @@ const CartPage = () => {
       });
       set_Cart_Data(newdata);
     } else {
+
       toast({
         title: "Quantity",
         description: "Minimum Quantity Is 1.",
@@ -118,6 +86,7 @@ const CartPage = () => {
       });
     }
   };
+
   console.log(total);
   const handleIncrease = (item) => {
     if (item.quantity < 5) {
@@ -150,7 +119,9 @@ const CartPage = () => {
     set_Cart_Data(removedata);
   };
   const handleRedirected = () => {
-    navigate("/cart/checkout");
+   
+    navigate('/cart/checkout');
+
   };
   const handleDiscount = () => {
     if (couponCount == 1) {
@@ -201,7 +172,7 @@ const CartPage = () => {
           <Text fontWeight={"semibold"} fontSize={"20px"}>
             My Cart
           </Text>
-          <Text w="70px">({data.length}items)</Text>
+          <Text w="70px">({Cart_Data.length}items)</Text>
         </Box>
 
         <Box display="flex" mb="30px">
@@ -596,7 +567,7 @@ export const SingleItem = ({
         display="flex"
         pl="10px"
       >
-        title:{item.title}
+      {item.title}
       </Text>
 
       <Box display="flex" w="95%" justifyContent="space-between" m="auto">
@@ -616,7 +587,7 @@ export const SingleItem = ({
             <Text> Brand:{item.brand}</Text>
             <Text> category:{item.category}</Text>
             {/* <Text> {item.Spindle_Speed}</Text> */}
-            <Button
+           {!dd ?<Button
               style={{
                 textAlign: "left",
                 display: "flex",
@@ -630,7 +601,7 @@ export const SingleItem = ({
             >
               <DeleteIcon color="blue.300" />
               Remove
-            </Button>
+            </Button>:null}
           </Box>
         </Box>
         {dd ? null : (
@@ -841,16 +812,4 @@ function OverlayModel({ isOpen, onClose }) {
       </Modal>
     </>
   );
-}
-const EmptyCart=()=>{
-  const navigate=useNavigate()
-  return(
-    <Box h="400px" w="100%" m="auto" boxShadow="rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;">
-
-      <Box style={{borderTop:"2px solid black",borderBottom:"2px solid black"}} w="100%" h="40px" ></Box>
-<Text>Shopping cart is empty!</Text>
-<Box m="auto" w="140px"><Button>Go To Products</Button></Box>
-<Box style={{borderTop:"2px solid black",borderBottom:"2px solid black"}} w="100%" h="40px" ></Box>
-    </Box>
-  )
 }
