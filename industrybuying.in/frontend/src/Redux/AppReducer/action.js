@@ -1,14 +1,26 @@
-import axios from "axios";
-import * as types from "./actionType";
+import {  GET_DATA_FAILURE, GET_DATA_REQUEST, GET_DATA_SUCCESS } from "./actionTypes"
 
-const getProductsRequest = () => {
-  return { type: types.GET_PRODUCTS_REQUEST };
-};
+const getDataRequest = ()=>
+{
+    return {
+        type:GET_DATA_REQUEST
+    }
+}
+const getDataSuccess = (payload)=>
+{
+    return {
+        type:GET_DATA_SUCCESS,
+        payload
+    }
+}
+const getDataFailure = ()=>
+{
+    return {
+        type:GET_DATA_FAILURE
+    }
+}
 
-const getProductsSuccess = (payload) => {
-  return { type: types.GET_PRODUCTS_SUCCESS, payload };
-};
 
-const getProductsFailure = () => {
-  return { type: types.GET_PRODUCTS_FAILURE };
-};
+
+
+export { getDataFailure, getDataRequest,getDataSuccess}
