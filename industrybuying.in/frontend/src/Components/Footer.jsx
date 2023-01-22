@@ -30,9 +30,9 @@ const Footer = () => {
           <Tab _selected={{ color: '#e9611e' }} >Popular Searches</Tab>
         </TabList>
 
-        <TabPanels>
+        <TabPanels >
           <TabPanel >
-            <Box display={"flex"} justifyContent="space-between" mr="90px" fontSize="13px" >
+            <Box display={"flex"} justifyContent="space-between"  fontSize={["8px","10px","13px"]} >
               <Box>
               <Box m="10px" >
               <Link color={"gray.400"} href="#">LED Lights</Link>
@@ -173,7 +173,7 @@ const Footer = () => {
             </Box>
           </TabPanel>
           <TabPanel>
-          <Box display={"flex"} justifyContent="space-between" mr="90px" fontSize="13px" >
+          <Box display={"flex"} justifyContent="space-between" fontSize={["8px","10px","13px"]} >
               <Box>
                 <Box m="10px" >
                   <Link color={"gray.400"} href="#">Bosch</Link>
@@ -394,7 +394,7 @@ const Footer = () => {
             </Box>
           </TabPanel>
           <TabPanel>
-          <Box display={"flex"} justifyContent="space-between" mr="90px" fontSize="13px" >
+          <Box display={"flex"} justifyContent="space-between"  fontSize={["8px","10px","13px"]} >
               <Box>
                 <Box m="10px" >
                   <Link color={"gray.400"} href="#">Office Chairs</Link>
@@ -617,7 +617,7 @@ const Footer = () => {
         </TabPanels>
       </Tabs>
       <Box p="40px" color="white" bg="#131a22"  >
-        <Box mr="90px" mb="20px" display={"flex"} justifyContent="space-between" >
+        <Box  mr={"90px"} mb="20px" display={["block","block","flex"]} justifyContent="space-between" >
         <Box>
             <Text fontSize={"18px"} as="b">
               Company
@@ -692,23 +692,23 @@ const Footer = () => {
             Subscribe to Newsletter
           </Text>
           <Box mt="20px" display={"flex"} >
-            <Input h="40px" bg="white" color="black" style={{borderRadius: "0px"}} placeholder="Enter your email address" />
-            <Button px="30px" h="40px" bg="#e9611e" style={{borderRadius: "0px"}} >Sign Me Up</Button>
+            <Input h={["20px","30px","40px"]} bg="white" fontSize={["8px","10px","13px"]} color="black" style={{borderRadius: "0px"}} placeholder="Enter your email address" />
+            <Button _hover={{backgroundColor:"#e9611e"}} px="30px" h={["20px","30px","40px"]} fontSize={["8px","10px","13px"]} bg="#e9611e" style={{borderRadius: "0px"}} >Sign Me Up</Button>
           </Box>
-          <Text color={"gray.200"} fontSize="14px" >Sign up to get exclusive offers from our favorite brands<br/> and to be well up in the news</Text>
+          <Text color={"gray.200"} fontSize={["8px","10px","13px"]} >Sign up to get exclusive offers from our favorite brands<br/> and to be well up in the news</Text>
         </Box>
         </Box>
         
 
-        <hr color='white' />
-      <Box display={"flex"} justifyContent="center" mt="30px" >
-        <Text fontSize={"18px"} as="b" mr="30px" >Payment Options</Text>
-        <Image src="https://www.industrybuying.com/static/images/payment_options_min.png"/>
+        <hr color='white'/>
+      <Box display={["block","block","flex"]} justifyContent="center" mt="30px" >
+        <Text fontSize={["10px","13px","18px"]} as="b" mr="30px" >Payment Options</Text>
+        <Image w={["80%","80%","40%"]} h={["15px","20px",null]} src="https://www.industrybuying.com/static/images/payment_options_min.png"/>
       </Box>
 
       </Box>
 
-      <Box w="100%" display={"flex"} justifyContent="center" p="10px" bg="#232f3e">
+      <Box w="100%" fontSize={["11px","12px","13px"]} display={["block","block","flex"]} justifyContent="center" p="10px" bg="#232f3e">
       <Text color={"gray.400"} >Copyright © industrybuying.com 2013-2022 All Right Reserved | &nbsp; </Text>
       <Link style={{ textDecoration: 'none' }} color="blue.500">Privacy Policy | &nbsp;</Link>
       <Link style={{ textDecoration: 'none' }} color="blue.500">Terms & Conditions </Link>
