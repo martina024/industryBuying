@@ -1,35 +1,41 @@
-import * as types from "./actionType";
-const initData = {
+import * as types from './actionTypes'
+
+const initState = {
+    data: [],
   isLoading: false,
-  isError: false,
-  products: [],
-};
-export const reducer = (oldState = initData, action) => {
-  const { type, payload } = action;
+  isError: false
+}
+
+export const reducer = (oldState = initState, action) => {
+  const {
+    type,
+    payload
+  } = action
   switch (type) {
-    case types.GET_PRODUCTS_REQUEST:
+    case types.GET_DATA_REQUEST:
       return {
         ...oldState,
-        isLoading: true,
-      };
-    case types.GET_PRODUCTS_SUCCESS:
-      return {
-        ...oldState,
-        isLoading: false,
-        products: payload,
-      };
-    case types.GET_PRODUCTS_FAILURE:
-      return {
-        ...oldState,
-        isLoading: false,
-        isError: true,
-        products: [],
-      };
+        isLoading: true
 
-     
+      }
+      case types.GET_DATA_FAILURE:
+        return {
+          ...oldState,
+            isError: true,
 
-    default:
-      return oldState;
+        }
+        case types.GET_DATA_SUCCESS:
+          return {
+            ...oldState,
+            isLoading: false,
+              isError: false,
+              data: payload
+
+          }
+        
+
+          default:
+            return oldState
+
   }
-};
-
+}
