@@ -115,8 +115,27 @@ const CartPage = () => {
     }
   };
   const handleRemove = (item) => {
+    const token = JSON.parse(localStorage.getItem("token")) || ""
+    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
     const removedata = Cart_Data.filter((ele) => ele._id !== item._id);
     set_Cart_Data(removedata);
+        axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,{
+       headers: {
+         Authorization: 'Bearer'+" "+token,
+         GSTIN: GSTIN
+       }
+      })
+        .then(res=>{
+             toast({
+              title: "Remove Data",
+              description: "Remove Succesfully",
+              status: "success",
+              position: "top",
+              duration: 2000,
+              isClosable: true,
+            });
+        })
+        .catch(err=>console.log(err))
   };
   const handleRedirected = () => {
    
