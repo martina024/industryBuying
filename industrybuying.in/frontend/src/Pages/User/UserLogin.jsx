@@ -69,7 +69,11 @@ export default function UserLogin() {
     });
     return axios
       .post("", payload)
-      .then((res) => console.log(res.data));
+      .then(res=>res.json())
+      .then(res=>{
+        localStorage.setItem("token",res.token)
+      })
+      .catch(err=>console.log(err));
       
     }
   };
