@@ -19,9 +19,16 @@ import {
   InputLeftAddon,
   Grid,
   GridItem,
+  Divider,
+  Select,
 } from "@chakra-ui/react";
+import { SingleItem } from "./CartPage";
+import axios from "axios";
+
 
 function CheckoutPage() {
+  const [Cart_Data, set_Cart_Data] = useState([]);
+  const [total, settotal] = useState(0);
   const [progress, setprogress] = useState(33.33);
   const [termserror, settermserror] = useState(false);
   const navigate = useNavigate();
@@ -40,6 +47,36 @@ function CheckoutPage() {
     makeprimary: false,
     terms: false,
   });
+  const handleTotal = () => {
+    let Total = 0;
+    Cart_Data.map((ele) => {
+      let addgst = (ele.price / 100) * 18;
+      let singleprice = addgst + ele.price;
+      Total += Math.floor(singleprice * ele.quantity);
+    });
+    settotal(Total);
+  };
+  const Get_All_Cart_Data = async () => {
+    // console.log("data")
+    let res = await axios.get(
+      `https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`
+    ).then((res)=>{
+   set_Cart_Data(res.data)
+      console.log(res);
+
+    })
+   
+  };
+  useEffect(() => { 
+    Get_All_Cart_Data();
+  }, []);
+ 
+  useEffect(() => {
+    handleTotal();
+  }, [Cart_Data]);
+
+
+
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -254,9 +291,14 @@ function CheckoutPage() {
             </Box>
           </Box>
         ) : step == 2 ? (
-          <CheckForm1 setprogress={setprogress} setStep={setStep}/>
+          <CheckForm1
+            setprogress={setprogress}
+            Cart_Data={Cart_Data}
+            setStep={setStep}
+          />
         ) : (
-          <CheckForm2 setprogress={setprogress}setStep={setStep} />
+
+          <CheckForm2 setprogress={setprogress} setStep={setStep} />
         )}
       </Box>
       <Box
@@ -265,30 +307,25 @@ function CheckoutPage() {
         style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
         w="30%"
       >
-             <Box
-                bgColor={"#4d4d4d"}
-                w="100%"
-                h="40px"
-                mb={"10px"}
-                ml="20px"
-                display="flex"
-                px="7px"
-                justifyContent="space-between"
-              >
-                <Text
-                  color="white"
-                  alignItems={"center"}
-                  textAlign="left"
-                  pt="5px"
-                >
-                  Payment Summary
-                </Text>
-                <Image
-                  filter={"invert(100%)"}
-                  w="20px"
-                  src="https://www.industrybuying.com/static/desktop-payment/assets/svg/rupee-circle-icon.svg"
-                />
-              </Box>
+        <Box
+          bgColor={"#4d4d4d"}
+          w="100%"
+          h="40px"
+          mb={"10px"}
+          ml="20px"
+          display="flex"
+          px="7px"
+          justifyContent="space-between"
+        >
+          <Text color="white" alignItems={"center"} textAlign="left" pt="5px">
+            Payment Summary
+          </Text>
+          <Image
+            filter={"invert(100%)"}
+            w="20px"
+            src="https://www.industrybuying.com/static/desktop-payment/assets/svg/rupee-circle-icon.svg"
+          />
+        </Box>
 
         <VStack>
           <Box
@@ -300,7 +337,7 @@ function CheckoutPage() {
             py="20px"
           >
             <Text>Subtotal:Rs.</Text>
-            <Text>{(1244).toLocaleString()}</Text>
+            <Text>{total.toLocaleString()}</Text>
           </Box>
           <Box
             display={"flex"}
@@ -324,7 +361,7 @@ function CheckoutPage() {
             fontSize={"20px"}
           >
             <Text>Total Price</Text>
-            <Text color="#e45301">{(1455).toLocaleString()}</Text>
+            <Text color="#e45301">{total.toLocaleString()}</Text>
           </Box>
           <HStack
             w="100%"
@@ -347,135 +384,217 @@ function CheckoutPage() {
     </Box>
   );
 }
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2M2NiYmM5OWFhYTZkZTRmNGU4ZDJjOGMiLCJpYXQiOjE2NzQyOTY1MDd9.barY9qnmDOK4I4ZwOOS7olVvQv8PxmDgVb2et-ipLCc"
 export { CheckoutPage };
-const CheckForm1 = ({setStep,setprogress}) => {
-
- const handle1=()=>{
-  setStep(stp=>stp-1)
-  setprogress(prog=>prog-33.33)
-
- }
-  const handle2=()=>{
-    setStep(stp=>stp+1)
-    setprogress(prog=>prog+33.33)
-  }
+const CheckForm1 = ({ setStep, setprogress, Cart_Data }) => {
+  const handle1 = () => {
+    setStep((stp) => stp - 1);
+    setprogress((prog) => prog - 33.33);
+  };
+  const handle2 = () => {
+    setStep((stp) => stp + 1);
+    setprogress((prog) => prog + 33.33);
+  };
   return (
     <>
-      <Text>Product Preview</Text>
+      <Text margin={"auto"} display="flex" w="200px" my="30px">
+        Product Preview
+      </Text>
+      <Box>
+        {Cart_Data.map((item, index) => (
+          <div key={item.id}>
+            <SingleItem
+              key={item._id}
+              item={item}
+              dd={true}
+              // handleDecrease={handleDecrease}
+              // handleIncrease={handleIncrease}
+              // handleRemove={handleRemove}
+            />
+            <Divider />
+          </div>
+        ))}
+      </Box>
       <Button onClick={handle1}>Back</Button>
       <Button onClick={handle2}>Next</Button>
     </>
   );
 };
-const CheckForm2 = ({setprogress,setStep}) => {
-const [card,setcard]=useState("")
-const[cvv,setcvv]=useState("")
-const [date ,setdate]=useState("")
-const [error,seterrr]=useState({err1:true,err2:true,err3:true})
-const handle1=()=>{
-  setStep(stp=>stp-1)
-  setprogress(prog=>prog-33.33)
- }
- const handlecardNo=(e)=>{
-  
-  if(card.length==16){
-    seterrr({...error,err1:false})}
-else if(card.length<16){
-
-setcard(e.target.value)
-
-}
- }
- const handlecvv=(e)=>{
-
-  if(card.length==3){
-    seterrr({...error,err2:false})}
-else if(cvv.length<3){
-setcvv(e.target.value)
-}
-
- }
+const CheckForm2 = ({ setprogress, setStep }) => {
+  const [card, setcard] = useState("");
+  const [cvv, setcvv] = useState("");
+  const [date, setdate] = useState("");
+  const [error, seterrr] = useState({ err1: true, err2: true, err3: true });
+  const toast = useToast();
+  const handle1 = () => {
+    setStep((stp) => stp - 1);
+    setprogress((prog) => prog - 33.33);
+  };
+  const handlecardNo = (e) => {
+    setcard(e.target.value);
+    if (card.length == 15) {
+      seterrr({ ...error, err1: false });
+    } else if (card.length < 15 || card.length > 15) {
+      seterrr({ ...error, err1: true });
+    }
+  };
+  const handlecvv = (e) => {
+    if (cvv.length == 2) {
+      seterrr({ ...error, err2: false });
+    } else if (cvv.length < 2 || cvv.length > 2) {
+      seterrr({ ...error, err2: true });
+    }
+    setcvv(e.target.value);
+  };
+  const handleOrder = () => {
+    if (error.err1 == false && error.err2 == false && error.err3 == false) {
+      toast({
+        title: "Order...",
+        description: "Order Placed Succesfully.",
+        position: "top",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Order...",
+        description: "Please Add All Details...",
+        status: "error",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
   return (
     <Box h="330px" w="70%" margin={"auto"}>
       <Text textAlign={"center"} fontSize="40px">
         Make Payment
-        <Box >
-      <Heading w="100%"  fontSize={"10px"}  color="#e45301"  textAlign={'left'} fontWeight="normal">
-      Enter Card Details
-      </Heading>
-      <SimpleGrid  columns={1} spacing={6}>
-        <FormControl as={GridItem} colSpan={[3, 2]}>
-        <InputGroup my="20px" size="sm">
-            <InputLeftAddon
-              bg="gray.50"
-              _dark={{
-                bg: 'gray.800',
-              }}
-              color="gray.500"
-              rounded="md">
-              Card No
-            </InputLeftAddon>
-            <Input
-             onChange={handlecardNo}
-             value={card}
-             placeholder="Enter No"
-              type="number"
-              focusBorderColor="brand.400"
-              rounded="md"
-            />
-          </InputGroup>
-            {/* cvv and expary */}
-           {/* <Grid my="50px" templateColumns={"repeat(2,1fr)"} gap="2px" > */}
-           <Box display={"flex"} justifyContent="space-between" >
-          <InputGroup  size="sm">
-            <InputLeftAddon
-              bg="gray.50"
-              _dark={{
-                bg: 'gray.800',
-              }}
-              color="gray.500"
-              rounded="md">
-              cvv
-            </InputLeftAddon>
-            <Input w="50px"
-              onChange={handlecvv}
-              value={cvv}
-              type="number"
-              placeholder="cvv"
-              focusBorderColor="brand.400"
-              rounded="md"
-            />
-          </InputGroup>
-          <InputGroup   size="sm">
-            <InputLeftAddon
-              bg="gray.50"
-              _dark={{
-                bg: 'gray.800',
-              }}
-              color="gray.500"
-              rounded="md">
-              Expary
-            </InputLeftAddon>
-            
-            <Input w="130px"
-              onChange={(e)=>{seterrr({...error,err3:false}); setdate(e.target.value)}}
-              value={date}
-              type="date"
-              isRequired="true"
-              focusBorderColor="brand.400"
-              rounded="md"
-            />
-           
-          </InputGroup>
-        
-          </Box>
-        </FormControl>
-      </SimpleGrid>
-    </Box>
-    </Text>
-<Box w="40%" justifyContent={"space-between"} display="flex">
-      <Button backgroundColor={"#e45301"}_hover={{color:"white" ,backgroundColor:"#e45301"}} onClick={handle1}>Back</Button>
-      <Button backgroundColor={"#e45301"} _hover={{color:"white" ,backgroundColor:"#e45301"}}>Place Order </Button>
+        <Box>
+          <Heading
+            w="100%"
+            fontSize={"14px"}
+            color="#e45301"
+            textAlign={"left"}
+            fontWeight="normal"
+          >
+            Enter Card Details
+          </Heading>
+          <SimpleGrid columns={1} spacing={6}>
+            <FormControl as={GridItem} colSpan={[3, 2]}>
+              <InputGroup my="20px" size="sm">
+                <InputLeftAddon
+                  bg="gray.50"
+                  _dark={{
+                    bg: "gray.800",
+                  }}
+                  color="gray.500"
+                  rounded="md"
+                >
+                  Card No
+                </InputLeftAddon>
+                <Input
+                  onChange={handlecardNo}
+                  value={card}
+                  type="number"
+                  focusBorderColor="brand.400"
+                  rounded="md"
+                />
+                <Text
+                  fontSize={"9px"}
+                  color="red"
+                  position={"absolute"}
+                  top="34px"
+                >
+                  {error.err1 ? "Card No Must Be 16-digit" : ""}
+                </Text>
+              </InputGroup>
+              {/* cvv and expary */}
+              {/* <Grid my="50px" templateColumns={"repeat(2,1fr)"} gap="2px" > */}
+              <Box display={"flex"} justifyContent="space-between">
+                <InputGroup my="30px" size="sm">
+                  <InputLeftAddon
+                    bg="gray.50"
+                    _dark={{
+                      bg: "gray.800",
+                    }}
+                    color="gray.500"
+                    rounded="md"
+                  >
+                    cvv
+                  </InputLeftAddon>
+                  <Input
+                    w="50px"
+                    onChange={handlecvv}
+                    value={cvv}
+                    type="number"
+                    focusBorderColor="brand.400"
+                    rounded="md"
+                  />
+                  <Text
+                    fontSize={"9px"}
+                    color="red"
+                    position={"absolute"}
+                    top="34px"
+                  >
+                    {error.err2 ? "CVV Must Be 3-digit" : ""}
+                  </Text>
+                </InputGroup>
+                <InputGroup size="sm">
+                  <InputLeftAddon
+                    bg="gray.50"
+                    _dark={{
+                      bg: "gray.800",
+                    }}
+                    color="gray.500"
+                    rounded="md"
+                  >
+                    Expiry
+                  </InputLeftAddon>
+
+                  <Input
+                    w="130px"
+                    onChange={(e) => {
+                      seterrr({ ...error, err3: false });
+                      setdate(e.target.value);
+                    }}
+                    value={date}
+                    type="date"
+                    isRequired="true"
+                    focusBorderColor="brand.400"
+                    rounded="md"
+                  />
+                  <Text
+                    fontSize={"9px"}
+                    color="red"
+                    position={"absolute"}
+                    top="34px"
+                  >
+                    {error.err3 ? "Enter correct Expiry Date " : ""}
+                  </Text>
+                </InputGroup>
+              </Box>
+            </FormControl>
+          </SimpleGrid>
+        </Box>
+      </Text>
+      <Box w="40%" justifyContent={"space-between"} display="flex">
+        <Button
+          backgroundColor={"#e45301"}
+          _hover={{ color: "white", backgroundColor: "#e45301" }}
+          onClick={handle1}
+        >
+          Back
+        </Button>
+        <Button
+          backgroundColor={"#e45301"}
+          _hover={{ color: "white", backgroundColor: "#e45301" }}
+          onClick={handleOrder}
+        >
+          Place Order{" "}
+        </Button>
       </Box>
     </Box>
   );

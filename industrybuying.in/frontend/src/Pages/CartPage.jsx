@@ -23,42 +23,12 @@ import {
   Badge,
   Flex,
   useToast,
-  Progress,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
-const data = [
-  {
-    id: 1,
-    image:
-      "https://static1.industrybuying.com/products_micro/agriculture-garden-landscaping/grain-processing-machine/AGR.GRA.82125517_1670416542273.webp",
-    Brand: "POWERWASH",
-    Voltage: "220 Volts",
-    Frequency: "50 Hz",
-    Model_No: "PW 280",
-    Quantity: 1,
-    Price: 7999,
-    GST: "18",
-    Description:
-      "Powerwash High Pressure Power Sprayer PW 280 with 6 Months Warranty",
-  },
-  {
-    id: 2,
-    image:
-      "https://static1.industrybuying.com/products_micro/cleaning/pressure-washer/CLE.PRE.53146602_1668052244969.webp",
-    Description:
-      "AgriPro 3 HP Butterfly Combined Rice Mill Machine without Motor APCRM6N9FC",
+import axios from "axios";
 
-    Brand: "AgriPro",
-    Machine_Size: "1050 (L) x 340 (W) x 1050 (H) mm",
-    Spindle_Speed: "Rice Mill: 1400-1600 RPM, Disc Mill: 4500-5500 RPM",
-    Type_of_Product: "Combined Rice Mill",
-    Quantity: 1,
-    Price: 7999,
-    GST: "12",
-  },
-];
 const CartPage = () => {
-  const [Cart_Data, set_Cart_Data] = useState(data);
+  const [Cart_Data, set_Cart_Data] = useState([]);
   const [pin, setPin] = useState("");
   const toast = useToast();
   const [error, setError] = useState("");
@@ -67,20 +37,29 @@ const CartPage = () => {
   const [coupon, setcoupon] = useState("");
   const [couponCount, setcouponCount] = useState(0);
   const navigate = useNavigate();
+
   // colapse function for price details
-  //   const Get_All_Cart_Data = () => {
-  //     fetch(`https://api.pujakaitem.com/api/products`).then((res) =>
-  //       res.json().then((res) => {
-  //         set_Cart_Data(res);
-  //       })
-  //     );
-  //   };
+  const Get_All_Cart_Data = async () => {
+    // console.log("data")
+    let res = await axios.get(
+      `https://doubtful-wasp-cowboy-boots.cyclic.app/products/cart`
+    ).then((res)=>{
+   set_Cart_Data(res.data)
+      console.log(res);
+
+    })
+   
+  };
+  useEffect(() => { 
+    Get_All_Cart_Data();
+  }, []);
+ 
   const handleTotal = () => {
     let Total = 0;
     Cart_Data.map((ele) => {
-      let addgst = (ele.Price / 100) * 18;
-      let singleprice = addgst + ele.Price;
-      Total += Math.floor(singleprice * ele.Quantity);
+      let addgst = (ele.price / 100) * 18;
+      let singleprice = addgst + ele.price;
+      Total += Math.floor(singleprice * ele.quantity);
     });
     settotal(Total);
   };
@@ -89,14 +68,15 @@ const CartPage = () => {
   }, [Cart_Data]);
 
   const handleDecrease = (item) => {
-    if (item.Quantity > 1) {
+    if (item.quantity > 1) {
       let newdata = Cart_Data.map((ele) => {
-        if (ele.id === item.id) {
-          return { ...ele, Quantity: ele.Quantity - 1 };
+        if (ele._id === item._id) {
+          return { ...ele, quantity: ele.quantity - 1 };
         } else return ele;
       });
       set_Cart_Data(newdata);
     } else {
+
       toast({
         title: "Quantity",
         description: "Minimum Quantity Is 1.",
@@ -106,12 +86,13 @@ const CartPage = () => {
       });
     }
   };
+
   console.log(total);
   const handleIncrease = (item) => {
-    if (item.Quantity < 5) {
+    if (item.quantity < 5) {
       let newdata = Cart_Data.map((ele) => {
-        if (ele.id === item.id) {
-          return { ...ele, Quantity: ele.Quantity + 1 };
+        if (ele._id === item._id) {
+          return { ...ele, quantity: ele.quantity + 1 };
         } else return ele;
       });
       set_Cart_Data(newdata);
@@ -134,11 +115,13 @@ const CartPage = () => {
     }
   };
   const handleRemove = (item) => {
-    const removedata = Cart_Data.filter((ele) => ele.id !== item.id);
+    const removedata = Cart_Data.filter((ele) => ele._id !== item._id);
     set_Cart_Data(removedata);
   };
   const handleRedirected = () => {
-    navigate("/cart/checkout");
+   
+    navigate('/cart/checkout');
+
   };
   const handleDiscount = () => {
     if (couponCount == 1) {
@@ -174,16 +157,6 @@ const CartPage = () => {
   };
   return (
     <>
-      <Box
-        fontFamily={"Open Sans Bold"}
-        w="100%"
-        h="50px"
-        border={"1px solid"}
-        bgColor="#232f3e"
-        position={"fixed"}
-        top="0px"
-        zIndex="20"
-      ></Box>
       <Box>
         <Box
           display="flex"
@@ -199,7 +172,7 @@ const CartPage = () => {
           <Text fontWeight={"semibold"} fontSize={"20px"}>
             My Cart
           </Text>
-          <Text w="70px">({data.length}items)</Text>
+          <Text w="70px">({Cart_Data.length}items)</Text>
         </Box>
 
         <Box display="flex" mb="30px">
@@ -226,7 +199,7 @@ const CartPage = () => {
               {Cart_Data.map((item, index) => (
                 <div key={item.id}>
                   <SingleItem
-                    key={item.id}
+                    key={item._id}
                     item={item}
                     handleDecrease={handleDecrease}
                     handleIncrease={handleIncrease}
@@ -251,6 +224,7 @@ const CartPage = () => {
                 borderRadius={0}
                 bgColor={"white"}
                 boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+                onClick={() => navigate("/")}
               >
                 + CONTINUE SHOPPING
               </Button>
@@ -565,19 +539,25 @@ const CartPage = () => {
 };
 export default CartPage;
 
-const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
+export const SingleItem = ({
+  item,
+  handleDecrease,
+  handleIncrease,
+  handleRemove,
+  dd,
+}) => {
   const toast = useToast();
   const [show, setShow] = React.useState(true);
   const totalPrice = (item) => {
-    let tax = Math.floor(item.Price / 100) * 18;
-    let totaltax = tax * item.Quantity;
-    let total = item.Price * item.Quantity + totaltax;
+    let tax = Math.floor(item.price / 100) * 18;
+    let totaltax = tax * item.quantity;
+    let total = item.price * item.quantity + totaltax;
     return { total, tax: totaltax };
   };
   // colapse function for price details
   const handleToggle = () => setShow(!show);
   return (
-    <Box h="250px" key={item.id}>
+    <Box h="250px" key={item._id}>
       {/* initial sec item quantity */}
       <Text
         mb="30px"
@@ -587,14 +567,14 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
         display="flex"
         pl="10px"
       >
-        {item.Description}
+      {item.title}
       </Text>
 
       <Box display="flex" w="95%" justifyContent="space-between" m="auto">
         <Box display="flex" fontSize="14px">
           <Box py="10px" px="10px" w="30%">
             <Image
-              src={item.image}
+              src={item.images[0].image_url}
               style={{
                 width: "50px",
 
@@ -604,10 +584,10 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
             />
           </Box>
           <Box textAlign={"left"} w="200px">
-            <Text> Brand:{item.Brand}</Text>
-            <Text> {item.Model_No}</Text>
-            <Text> {item.Spindle_Speed}</Text>
-            <Button
+            <Text> Brand:{item.brand}</Text>
+            <Text> category:{item.category}</Text>
+            {/* <Text> {item.Spindle_Speed}</Text> */}
+           {!dd ?<Button
               style={{
                 textAlign: "left",
                 display: "flex",
@@ -621,60 +601,63 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
             >
               <DeleteIcon color="blue.300" />
               Remove
-            </Button>
+            </Button>:null}
           </Box>
         </Box>
-        <div
-          style={{
-            width: "70px",
-            display: "flex",
-            height: "33px",
-            color: "grey",
-            alignItems: "center",
-            border: "0.5px solid RGBA(0, 0, 0, 0.16)",
-          }}
-        >
-          <button
+        {dd ? null : (
+          <Box
             style={{
+              width: "70px",
+              display: "flex",
+              height: "33px",
+              color: "grey",
               alignItems: "center",
-              fontSize: "18px",
-              height: "30px",
-              margin: "auto",
+              border: "0.5px solid RGBA(0, 0, 0, 0.16)",
+            }}
+          >
+            <button
+              style={{
+                alignItems: "center",
+                fontSize: "18px",
+                height: "30px",
+                margin: "auto",
 
-              backgroundColor: "white",
-              borderRight: "0.5px solid RGBA(0, 0, 0, 0.16)",
-              cursor: "pointer",
-            }}
-            onClick={() => handleDecrease(item)}
-          >
-            <MinusIcon py="1" />
-          </button>
-          <input
-            type="text"
-            value={item.Quantity}
-            style={{
-              width: "30px",
-              height: "30px",
-              fontSize: "20px",
-              textAlign: "center",
-              margin: "auto",
-            }}
-          />
-          <button
-            style={{
-              alignItems: "center",
-              fontSize: "18px",
-              backgroundColor: "white",
-              border: "none",
-              borderLeft: "0.5px solid RGBA(0, 0, 0, 0.16)",
-              cursor: "pointer",
-              margin: "auto",
-            }}
-            onClick={() => handleIncrease(item)}
-          >
-            <AddIcon py="1" />
-          </button>
-        </div>
+                backgroundColor: "white",
+                borderRight: "0.5px solid RGBA(0, 0, 0, 0.16)",
+                cursor: "pointer",
+              }}
+              onClick={() => handleDecrease(item)}
+            >
+              <MinusIcon py="1" />
+            </button>
+            <input
+              type="text"
+              value={item.quantity}
+              style={{
+                width: "30px",
+                height: "30px",
+                fontSize: "20px",
+                textAlign: "center",
+                margin: "auto",
+              }}
+            />
+            <button
+              style={{
+                alignItems: "center",
+                fontSize: "18px",
+                backgroundColor: "white",
+                border: "none",
+                borderLeft: "0.5px solid RGBA(0, 0, 0, 0.16)",
+                cursor: "pointer",
+                margin: "auto",
+              }}
+              onClick={() => handleIncrease(item)}
+            >
+              <AddIcon py="1" />
+            </button>
+          </Box>
+        )}
+
         <Box w="30%">
           <HStack w="50%" m="auto" justifyContent={"space-between"}>
             <span>RS:{totalPrice(item).total.toLocaleString()}</span>
@@ -721,7 +704,7 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
             >
               <Box display="flex" w="95%" justifyContent="space-between">
                 <span> Price Rs.</span>
-                <span>{item.Price.toLocaleString()}</span>
+                <span>{item.price.toLocaleString()}</span>
               </Box>
               <Box
                 display="flex"
@@ -729,7 +712,7 @@ const SingleItem = ({ item, handleDecrease, handleIncrease, handleRemove }) => {
                 justifyContent="space-between"
                 m="auto"
               >
-                <span> GST@{item.GST}%</span>
+                <span> GST@{18}%</span>
                 <span>+Rs.{totalPrice(item).tax.toLocaleString()}</span>
               </Box>
               <Box
@@ -830,4 +813,3 @@ function OverlayModel({ isOpen, onClose }) {
     </>
   );
 }
-

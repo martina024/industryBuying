@@ -51,6 +51,7 @@ export default function UserSignup() {
         duration: 3000,
         isClosable: true,
       });
+      return
     }
     else if(!payload.email){
 
@@ -61,17 +62,20 @@ export default function UserSignup() {
         duration: 3000,
         isClosable: true,
       });
+      return
     }
-    else if(payload.phoneNumber.length !=10){
+    else if(!payload.password){
+
       toast({
-        title: "Error in Contact Details",
-        description: "It must be of 10 digits",
+        title: "Please fill your Password",
+        description: "Your password is missing",
         status: "error",
-        duration: 4000,
+        duration: 3000,
         isClosable: true,
       });
       return
     }
+    
     console.log(payload);
     // console.log(typeof(payload.phoneNumber))
     {
@@ -83,43 +87,49 @@ export default function UserSignup() {
       duration: 4000,
       isClosable: true,
     });
+    <Link style={{color:"blue"}} to="/login">Login</Link>
     return axios
-      .post("http://localhost:8082/register", payload)
-      .then((res) => console.log(res.data));
+      .post("https://doubtful-wasp-cowboy-boots.cyclic.app/register", payload)
+      .then((res) => console.log(res.data.message))
       
     }
   };
 
   return (
     <Flex
-      minH={"20vh"}
+      minH={"80vh"}
+      
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bgGradient="radial(gray.100, green.100, pink.200)"
+      
+      
      
     >
-      <Stack spacing={2} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
+      <Stack spacing={2} mx={"auto"} maxW={"md"} py={12} px={6} width="40%" >
+        <Stack align={"center"}  >
           <Heading fontSize={"2xl"} textAlign={"center"}>
-            Sign up
+            Sign up Form
           </Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            to enjoy all of our cool features ✌️
+            Get access to our latest products
           </Text>
         </Stack>
         <Box
+         
           rounded={"md"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg={useColorModeValue("grey.700", "grey.700")}
           boxShadow={"lg"}
-          p={8}
+          p={4}
         >
-          <Stack spacing={4}>
+          <Stack spacing={1}>
             <HStack>
               <Box>
                 <FormControl id="firstName" isRequired>
                   <FormLabel>Name</FormLabel>
                   <Input
-                    fontSize={7}
+                        size="md"
+                        fontSize={15}
                     width={200}
                     type="text"
                     placeholder="Enter your Name"
@@ -132,7 +142,8 @@ export default function UserSignup() {
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
               <Input
-                fontSize={7}
+                size="md"
+                fontSize={15}
                 type="email"
                 placeholder="Enter your Email"
                 value={email}
@@ -143,7 +154,8 @@ export default function UserSignup() {
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
-                  fontSize={7}
+                      size="md"
+                      fontSize={15}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your Password"
                   value={password}
@@ -164,12 +176,13 @@ export default function UserSignup() {
             <Box>
                 <FormControl id="contact">
                   <FormLabel>Contact</FormLabel>
-                  <Input fontSize={7}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
+                  <Input    size="md" fontSize={15}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
                 </FormControl>
               </Box>
 
             <Select
-              fontSize={10}
+             fontSize={15}
+              ml={-10}
               placeholder="Select Gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
@@ -178,12 +191,13 @@ export default function UserSignup() {
               <option value="female">Female</option>
               <option value="other">Prefer not to say</option>
             </Select>
-            <Stack fontSize={7} spacing={3} pt={2}>
+            <Stack fontSize={7} spacing={1} pt={2}>
               <Button
                 onClick={handleSubmit}
                 size="md"
+                
                 bg={"blue.400"}
-                color={"white"}
+                colorScheme="teal"
                 _hover={{
                   bg: "blue.500",
                 }}
@@ -191,8 +205,8 @@ export default function UserSignup() {
                 Sign up
               </Button>
             </Stack>
-            <Stack pt={3}>
-              <Text align={"center"} fontSize={11}>
+            <Stack pt={1}>
+              <Text align={"center"} fontSize={10}>
                 Already a user? <Link style={{color:"blue"}} to="/login">Login</Link>
               </Text>
             </Stack>
