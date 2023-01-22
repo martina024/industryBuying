@@ -21,7 +21,7 @@ const AdminDashboard = () => {
       data.category!==""&&
       data.title!==""&&data.images!==[]){
         
-          axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
+          axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
          headers: {
            Authorization: 'Bearer'+" "+token,
            GSTIN: GSTIN
@@ -71,6 +71,8 @@ const AdminDashboard = () => {
     // console.log(res.data.data.data);
   };
   const handleDelete=(item)=>{
+    const removedata = products.filter((ele) => ele._id !== item._id);
+setproducts(removedata)
     const token = JSON.parse(localStorage.getItem("token")) || ""
     const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
       axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,{
