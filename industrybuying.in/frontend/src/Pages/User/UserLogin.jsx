@@ -8,7 +8,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Image,
   useColorModeValue,
@@ -19,10 +18,13 @@ import {
 import axios from 'axios';
 import { useState } from 'react';
 import image from '../User/logo.jpg'
+import {Link, Navigate, useNavigate} from "react-router-dom"
 export default function UserLogin() {
+  const navigate=useNavigate()
   const toast=useToast()
   const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue('gray.100', 'gray.700');
+  let flag=false
  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,7 @@ export default function UserLogin() {
       password,
       
     };
-   
+
     if(!payload.email){
 
       toast({
@@ -61,17 +63,38 @@ export default function UserLogin() {
     //if successfull
     {
 
-      toast({
-      title: "Your are successfully logged in",
-      status: "success",
-      duration: 4000,
-      isClosable: true,
-    });
-    return axios
-      .post("", payload)
-      .then(res=>res.json())
+    //   toast({
+    //   title: "Your are successfully logged in",
+    //   status: "success",
+    //   duration: 4000,
+    //   isClosable: true,
+    // });
+     axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/login", payload)
       .then(res=>{
-        localStorage.setItem("token",res.token)
+       flag=true;
+        localStorage.setItem("token",JSON.stringify(res.data.token))
+        console.log(res.data);
+        if(res.data.token){
+        
+          toast({
+            title: "Your are successfully logged in",
+            description: "Taking you to homepage",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          })
+          return <Navigate to ="/" />
+        }
+        else{
+          toast({
+            title: "Invalid email/password",
+            description: "Please write correct email / password",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+
+        }
       })
       .catch(err=>console.log(err));
       
@@ -90,9 +113,9 @@ export default function UserLogin() {
       >
         <Heading mb={6}>User Log In</Heading>
         <Input
-          placeholder="john@gmail.com"
+          placeholder="Enter your email"
           type="email"
-          variant="filled"
+          // variant="filled"
           mb={3}
           value={email}
           onChange={(e) => setEmail(e.target.value)}

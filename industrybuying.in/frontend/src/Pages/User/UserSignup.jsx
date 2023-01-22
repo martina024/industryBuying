@@ -64,16 +64,18 @@ export default function UserSignup() {
       });
       return
     }
-    else if(payload.phoneNumber.length !=10){
+    else if(!payload.password){
+
       toast({
-        title: "Error in Contact Details",
-        description: "It must be of 10 digits",
+        title: "Please fill your Password",
+        description: "Your password is missing",
         status: "error",
-        duration: 4000,
+        duration: 3000,
         isClosable: true,
       });
       return
     }
+    
     console.log(payload);
     // console.log(typeof(payload.phoneNumber))
     {
@@ -85,25 +87,26 @@ export default function UserSignup() {
       duration: 4000,
       isClosable: true,
     });
+    <Link style={{color:"blue"}} to="/login">Login</Link>
     return axios
-      .post("http://localhost:8082/register", payload)
-      .then((res) => console.log(res.data));
+      .post("https://doubtful-wasp-cowboy-boots.cyclic.app/register", payload)
+      .then((res) => console.log(res.data.message))
       
     }
   };
 
   return (
     <Flex
-      minH={"20vh"}
+      minH={"80vh"}
+      
       align={"center"}
       justify={"center"}
-      // bgGradient="linear(to-t, green.200, pink.500)"
       bgGradient="radial(gray.100, green.100, pink.200)"
-      // bg={useColorModeValue("gray.50", "gray.800")}
+      
       
      
     >
-      <Stack spacing={2} mx={"auto"} maxW={"md"} py={12} px={6}  >
+      <Stack spacing={2} mx={"auto"} maxW={"md"} py={12} px={6} width="40%" >
         <Stack align={"center"}  >
           <Heading fontSize={"2xl"} textAlign={"center"}>
             Sign up Form
@@ -125,8 +128,8 @@ export default function UserSignup() {
                 <FormControl id="firstName" isRequired>
                   <FormLabel>Name</FormLabel>
                   <Input
-                        size="sm"
-                        fontSize={6}
+                        size="md"
+                        fontSize={15}
                     width={200}
                     type="text"
                     placeholder="Enter your Name"
@@ -139,8 +142,8 @@ export default function UserSignup() {
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
               <Input
-                size="sm"
-                fontSize={6}
+                size="md"
+                fontSize={15}
                 type="email"
                 placeholder="Enter your Email"
                 value={email}
@@ -151,8 +154,8 @@ export default function UserSignup() {
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
-                      size="sm"
-                      fontSize={6}
+                      size="md"
+                      fontSize={15}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your Password"
                   value={password}
@@ -173,12 +176,12 @@ export default function UserSignup() {
             <Box>
                 <FormControl id="contact">
                   <FormLabel>Contact</FormLabel>
-                  <Input    size="sm" fontSize={6}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
+                  <Input    size="md" fontSize={15}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
                 </FormControl>
               </Box>
 
             <Select
-              fontSize={10}
+             fontSize={15}
               ml={-10}
               placeholder="Select Gender"
               value={gender}
@@ -191,7 +194,7 @@ export default function UserSignup() {
             <Stack fontSize={7} spacing={1} pt={2}>
               <Button
                 onClick={handleSubmit}
-                size="sm"
+                size="md"
                 
                 bg={"blue.400"}
                 colorScheme="teal"

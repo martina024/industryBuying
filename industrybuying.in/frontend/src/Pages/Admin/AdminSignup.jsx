@@ -66,16 +66,7 @@ export default function AdminSignup() {
       });
       return
     }
-    else if(payload.phoneNumber.length !=10){
-      toast({
-        title: "Error in Contact Details",
-        description: "It must be of 10 digits",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
-      return
-    }
+  
     console.log(payload);
     // console.log(typeof(payload.phoneNumber))
     {
@@ -88,7 +79,7 @@ export default function AdminSignup() {
       isClosable: true,
     });
     return axios
-      .post("http://localhost:8082/register", payload)
+      .post(" https://doubtful-wasp-cowboy-boots.cyclic.app/admin/register", payload)
       .then((res) => console.log(res.data));
       
     }
@@ -99,31 +90,32 @@ export default function AdminSignup() {
       minH={"20vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      // bg={useColorModeValue("gray.50", "gray.800")}
+      bgGradient="radial(gray.100, purple.100, pink.200)"
      
     >
-      <Stack spacing={2} mx={"auto"} maxW={"lg"} py={12} px={6}>
+      <Stack spacing={2} mx={"auto"} maxW={"lg"} py={12} px={6} width="40%">
         <Stack align={"center"}>
           <Heading fontSize={"2xl"} textAlign={"center"}>
-            Sign up
+            Admin Sign up
           </Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            to enjoy all of our cool features ✌️
+            Be a seller with our site
           </Text>
         </Stack>
         <Box
           rounded={"md"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg={useColorModeValue("grey.300", "gray.700")}
           boxShadow={"lg"}
           p={8}
         >
-          <Stack spacing={4}>
+          <Stack spacing={1}>
             <HStack>
               <Box>
                 <FormControl id="firstName" isRequired>
                   <FormLabel>Name</FormLabel>
                   <Input
-                    fontSize={7}
+                    fontSize={14} 
                     width={200}
                     type="text"
                     placeholder="Enter your Name"
@@ -136,7 +128,7 @@ export default function AdminSignup() {
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
               <Input
-                fontSize={7}
+                fontSize={14} 
                 type="email"
                 placeholder="Enter your Email"
                 value={email}
@@ -147,7 +139,7 @@ export default function AdminSignup() {
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
-                  fontSize={7}
+                  fontSize={14} 
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your Password"
                   value={password}
@@ -168,22 +160,22 @@ export default function AdminSignup() {
             <Box>
                 <FormControl id="contact">
                   <FormLabel>Contact</FormLabel>
-                  <Input fontSize={7}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
+                  <Input fontSize={14}   type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="contact">
                   <FormLabel>GSTIN </FormLabel>
-                  <Input fontSize={7}  type="text" placeholder="GSTIN Number" value={GSTIN } onChange={(e)=> setGSTIN (e.target.value)}  />
+                  <Input fontSize={14} type="text" placeholder="GSTIN Number" value={GSTIN } onChange={(e)=> setGSTIN (e.target.value)}  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="contact">
                   <FormLabel>Store Name</FormLabel>
-                  <Input fontSize={7}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(+(e.target.value))}  />
+                  <Input fontSize={14}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(+(e.target.value))}  />
                 </FormControl>
               </Box>
-            <Stack fontSize={7} spacing={3} pt={2}>
+            <Stack fontSize={7} spacing={1} pt={2}>
               <Button
                 onClick={handleSubmit}
                 size="md"
@@ -197,8 +189,8 @@ export default function AdminSignup() {
               </Button>
             </Stack>
             <Stack pt={3}>
-              <Text align={"center"} fontSize={11}>
-                Already a user? <Link style={{color:"blue"}} to="/login">Login</Link>
+              <Text align={"center"} fontSize={14} >
+                Already a user? <Link style={{color:"blue"}} to="/admin/login">Login</Link>
               </Text>
             </Stack>
           </Stack>
