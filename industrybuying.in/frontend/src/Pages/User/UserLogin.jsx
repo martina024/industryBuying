@@ -19,6 +19,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import image from '../User/logo.jpg'
 import {Link, Navigate, useNavigate} from "react-router-dom"
+import Navbar from '../../Components/Navbar';
+import Footer from '../../Components/Footer';
 export default function UserLogin() {
   const navigate=useNavigate()
   const toast=useToast()
@@ -101,6 +103,10 @@ export default function UserLogin() {
     }
   };
   return (
+
+    <>
+   <Navbar/>
+
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
    
         <Flex h="100vh" alignItems="center" justifyContent="center" w="60%">
@@ -152,5 +158,9 @@ export default function UserLogin() {
         />
       </Flex>
     </Stack>
+
+    <Footer/>
+
+    </>
   );
 }

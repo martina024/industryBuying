@@ -26,6 +26,8 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 const CartPage = () => {
   const [Cart_Data, set_Cart_Data] = useState([]);
@@ -213,7 +215,10 @@ const CartPage = () => {
   };
   return (
     <>
-      <Box>
+
+    <Navbar/>
+
+      <Box mt="90px">
         <Box
           display="flex"
           w="67%"
@@ -590,6 +595,7 @@ const CartPage = () => {
           </VStack>
         </Box>
       </Box>
+      <Footer/>
     </>
   );
 };
@@ -868,6 +874,9 @@ function OverlayModel({ isOpen, onClose }) {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+
+    
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { Box, Button, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Footer from "../../Components/Footer";
+import Navbar from "../../Components/Navbar";
 const AdminDashboard = () => {
   const [products, setproducts] = useState([]);
   const toast=useToast()
@@ -100,7 +102,10 @@ setproducts(removedata)
     Get_All_Cart_Data();
   }, []);
   return (
-    <Box display={"flex"} >
+    <>
+    <Navbar/>
+
+    <Box display={"flex"} mt="90px">
       <Box  w="30%"  m="10px"  boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" h="350px"p="20px" >
         <Input mb="10px"
           onChange={handleChange}
@@ -164,6 +169,9 @@ setproducts(removedata)
         ))}
       </Box>
     </Box>
+
+    <Footer/>
+    </>
   );
 }
 

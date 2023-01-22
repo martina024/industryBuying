@@ -29,7 +29,7 @@ const Navbar = () => {
   const [search,setSearch]=useState("")
 
   return (
-    <Box w="100%" bg="white" position={"fixed"} zIndex={1} >
+    <Box w="100%" bg="white" position={"fixed"} zIndex={25} top="0px">
     <Box mr="20px" display={"flex"} justifyContent={"right"} >
     <Text as='b' fontSize={["8px","10px","14px"]} >For any query, email us at <span style={{color:"red"}} >care@industrybuying.com</span> or call us on <span style={{color:"red"}} >+91 8448449073</span> </Text>
     </Box>

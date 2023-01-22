@@ -22,6 +22,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import {Link} from "react-router-dom"
+import Footer from "../../Components/Footer";
 
 export default function UserSignup() {
   const [name, setName] = useState("");
@@ -96,6 +97,7 @@ export default function UserSignup() {
   };
 
   return (
+    <>
     <Flex
       minH={"80vh"}
       
@@ -130,7 +132,7 @@ export default function UserSignup() {
                   <Input
                         size="md"
                         fontSize={15}
-                    width={200}
+                        width={373}
                     type="text"
                     placeholder="Enter your Name"
                     value={name}
@@ -214,5 +216,8 @@ export default function UserSignup() {
         </Box>
       </Stack>
     </Flex>
+
+    <Footer/>
+    </>
   );
 }

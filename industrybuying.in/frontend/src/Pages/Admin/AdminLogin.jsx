@@ -19,7 +19,7 @@ const Login = () => {
   const toast = useToast()
   const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue('gray.100', 'gray.700');
-  const [email, setEmail] = React.useState("eve.holt@reqres.in");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [value, setValue] = React.useState(false)
   const handleSubmit = () => {
@@ -129,6 +129,8 @@ else{
             onChange={toggleColorMode}
           />
         </FormControl>
+
+        <Link href="/admin/dashboard" style={{textDecoration:"none"}} >ADMIN DASHBOARD</Link>
       </Flex>
     </Flex>
   );

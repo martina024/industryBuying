@@ -25,6 +25,8 @@ import {
   getDataSuccess,
 } from "../Redux/AppReducer/action";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 
 const Productspage = () => {
@@ -439,7 +441,9 @@ const handlePrice6 = () => {
   } else {
     return (
       <>
-      <Box w="98%" m="auto" mt="15]px">
+      <Navbar/>
+
+      <Box w="98%" m="auto" mt="15px">
         <Box h="50px" bg="white" width={"100%"}></Box>
 
         <br />
@@ -729,6 +733,7 @@ const handlePrice6 = () => {
         </Flex>
       </Box>
      
+     <Footer/>
       </>
     );
   }

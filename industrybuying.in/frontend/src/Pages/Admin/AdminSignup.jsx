@@ -172,7 +172,7 @@ export default function AdminSignup() {
               <Box>
                 <FormControl id="contact">
                   <FormLabel>Store Name</FormLabel>
-                  <Input fontSize={14}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(+(e.target.value))}  />
+                  <Input fontSize={14}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(e.target.value)}  />
                 </FormControl>
               </Box>
             <Stack fontSize={7} spacing={1} pt={2}>
