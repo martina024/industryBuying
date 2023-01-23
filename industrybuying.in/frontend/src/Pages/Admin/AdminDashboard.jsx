@@ -1,48 +1,61 @@
-import { Box, Button, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import UpdateProduct from "../../Components/Admin/UpdateProduct";
+
 import Footer from "../../Components/Footer";
 import Navbar from "../../Components/Navbar";
+
+
 const AdminDashboard = () => {
   const [products, setproducts] = useState([]);
+
+  const token = JSON.parse(localStorage.getItem("adminToken")) || ""
+  const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
+
+  // console.log(token , "token",GSTIN, "Gstin")
+
   const toast=useToast()
   const [data, setdata] = useState({
-    price: 0,
+    title: "",
+    price: "",
+    quantity: 0,
     brand: "",
     category: "",
-    title: "",
-    images: [],
+    sub_category:"",
+    images:[]
   });
   const handleSubmit=()=>{
-    const token = JSON.parse(localStorage.getItem("token")) || ""
+  
+    if( data.title && data.price && data.brand && data.category && data.sub_category && data.images.length>0){
 
-        const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
-        
-    if( data.price>0&&
-      data.brand!==""&&
-      data.category!==""&&
-      data.title!==""&&data.images!==[]){
-        
+
+    console.log(data, "m")
+
           axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
          headers: {
-           Authorization: 'Bearer'+" "+token,
-           GSTIN: GSTIN
+           Authorization:'Bearer'+" "+token,
+           gstin: GSTIN
          }
         })
           .then(res=>{
-            console.log(res.data)
+            console.log(res)
             // navigate("/cart")
-    
+            
         toast({
-          title: "Add Data",
+          title: "Add the Product",
           description: "Product Added Succesfully",
           status: "success",
           position: "top",
           duration: 2000,
           isClosable: true,
         });
+
+        Get_All_Cart_Data()
       })
-      }else {
+      }
+      
+      else {
         toast({
           title: "Add Data",
           description: "Please Add All Details",
@@ -58,12 +71,16 @@ const AdminDashboard = () => {
     let val;
     if (e.target.name == "images") {
       val = [{ image_url: value }];
-    } else {
+    } 
+    else if(name=="price"){
+      val = Number(value)
+    }
+    else {
       val = value;
     }
     setdata({ ...data, [name]: val });
   };
-  console.log(data);
+  // console.log(data);
   const Get_All_Cart_Data = async () => {
     // console.log("data")
     let res = await axios.get(
@@ -73,17 +90,19 @@ const AdminDashboard = () => {
     // console.log(res.data.data.data);
   };
   const handleDelete=(item)=>{
-    const removedata = products.filter((ele) => ele._id !== item._id);
-setproducts(removedata)
-    const token = JSON.parse(localStorage.getItem("token")) || ""
-    const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
-      axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item.id}`,{
+//     const removedata = products.filter((ele) => ele._id !== item._id);
+// setproducts(removedata)
+  //  console.log(item)
+      axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item}`,{
      headers: {
        Authorization: 'Bearer'+" "+token,
        GSTIN: GSTIN
      }
     })
+   
       .then(res=>{
+        console.log(res.data)
+        
            toast({
             title: "Delete Data",
             description: "Product Delete Succesfully",
@@ -92,12 +111,38 @@ setproducts(removedata)
             duration: 2000,
             isClosable: true,
           });
+
+          Get_All_Cart_Data()
       })
       .catch(err=>console.log(err))
 
   }
-  const handleUpdate=()=>{
+
+
+  const updateProducts = (id,price) => {
+    console.log(price)
+
+    axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/update/${id}`,price,{
+      headers: {
+        Authorization: 'Bearer'+" "+token
+      }
+     })
+       .then(res=>{
+         console.log(res.data)
+       })
+       .catch(err=>console.log(err))
   }
+
+
+
+
+
+  const modifyTaskFunc = async (id,price)=>{
+    await updateProducts(id,price)
+    Get_All_Cart_Data();
+  }
+
+  
   useEffect(() => {
     Get_All_Cart_Data();
   }, []);
@@ -106,7 +151,7 @@ setproducts(removedata)
     <Navbar/>
 
     <Box display={"flex"} mt="90px">
-      <Box  w="30%"  m="10px"  boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" h="350px"p="20px" >
+      <Box  w="30%"  m="10px"  boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" h="380px"p="20px" >
         <Input mb="10px"
           onChange={handleChange}
           name="brand"
@@ -129,6 +174,14 @@ setproducts(removedata)
           <option value="Electrical">Electrical</option>
           <option value="IT & Electronics">IT & Electronics</option>
         </Select>
+
+        <Input  mb="10px"
+          onChange={handleChange}
+          type="url"
+          name="sub_category"
+          placeholder="Enter Subcategory"
+        />
+        
         <Input  mb="10px"
           onChange={handleChange}
           type="number"
@@ -141,6 +194,7 @@ setproducts(removedata)
           name="images"
           placeholder="Enter Url"
         />
+
         <Button m="auto" onClick={handleSubmit}>ADD</Button>
       </Box>
       <Box w="70%" style={{ height: "500px", overflowY: "scroll" }} m="10px">
@@ -160,11 +214,13 @@ setproducts(removedata)
               <Text>{item.brand}</Text>
               <Text>{item.price}</Text>
             </VStack>
-            <VStack w="30%" m="auto">
-              {" "}
-              <Button onClick={()=>handleDelete(item)}>DELETE</Button>
-              <Button onClick={()=>handleUpdate(item)}>UPDATE</Button>
-            </VStack>
+            <HStack gap="15px" w="30%" m="auto">
+              <Button onClick={()=>handleDelete(item._id)}>DELETE</Button>
+              <UpdateProduct
+                id={item._id}
+                editFunc={modifyTaskFunc}
+                />
+            </HStack>
           </Box>
         ))}
       </Box>

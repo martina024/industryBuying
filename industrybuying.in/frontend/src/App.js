@@ -1,5 +1,3 @@
-
-import Footer from './Components/Footer';
 import AllRoutes from './Pages/AllRoutes';
 
 function App() {

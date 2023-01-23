@@ -21,7 +21,7 @@ import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
 // import { Navigate } from "react-router-dom";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 export default function AdminSignup() {
   const [name, setName] = useState("");
@@ -30,6 +30,7 @@ export default function AdminSignup() {
   const [phoneNumber, setContact] = useState("");
   const [GSTIN ,setGSTIN ]=useState("")
   const [storeName,setstoreName]=useState("")
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   // let user = [];
@@ -40,13 +41,14 @@ export default function AdminSignup() {
       name,
       email,
       password,
-      phoneNumber,
+      phoneNumber:Number(phoneNumber),
       storeName,
       GSTIN,
     };
     if(!payload.name){
 
       toast({
+        position:"top",
         title: "Please fill your Name",
         description: "Your name is missing",
         status: "error",
@@ -58,8 +60,63 @@ export default function AdminSignup() {
     else if(!payload.email){
 
       toast({
+        position:"top",
         title: "Please fill your Email",
         description: "Your email is missing",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+
+    else if(!payload.password){
+
+      toast({
+        position:"top",
+        title: "Please fill your Password",
+        description: "Your email is missing",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+
+
+    else if(!payload.phoneNumber){
+
+      toast({
+        position:"top",
+        title: "Please fill your Contact Details",
+        // description: "Your email is missing",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+
+
+    else if(!payload.GSTIN){
+
+      toast({
+        position:"top",
+        title: "Please fill your GST Number",
+        // description: "Your GST Number is missing",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+
+    else if(!payload.storeName){
+
+      toast({
+        position:"top",
+        title: "Please fill your Unique Store Name",
+        // description: "Your Store Name is missing",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -71,16 +128,22 @@ export default function AdminSignup() {
     // console.log(typeof(payload.phoneNumber))
     {
 
-      toast({
-      title: "Your account is created",
-      description: "We've created your account for you.",
-      status: "success",
-      duration: 4000,
-      isClosable: true,
-    });
-    return axios
-      .post(" https://doubtful-wasp-cowboy-boots.cyclic.app/admin/register", payload)
-      .then((res) => console.log(res.data));
+       axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/register",payload)
+      .then((res) =>{
+        toast({
+          position:"top",
+          title: `${res.data.message}`,
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+
+        setTimeout (() => {
+          navigate("/admin/login")
+        },3000)
+      }
+       )
       
     }
   };
@@ -158,24 +221,24 @@ export default function AdminSignup() {
               </InputGroup>
             </FormControl>
             <Box>
-                <FormControl id="contact">
+                <FormControl id="contact" isRequired>
                   <FormLabel>Contact</FormLabel>
-                  <Input fontSize={14}   type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
+                  <Input fontSize={14}   type="number" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact((e.target.value))}  />
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="contact">
+                <FormControl id="contact" isRequired>
                   <FormLabel>GSTIN </FormLabel>
                   <Input fontSize={14} type="text" placeholder="GSTIN Number" value={GSTIN } onChange={(e)=> setGSTIN (e.target.value)}  />
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="contact">
+                <FormControl id="contact" isRequired>
                   <FormLabel>Store Name</FormLabel>
-                  <Input fontSize={14}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(e.target.value)}  />
+                  <Input mb="15px" fontSize={14}  type="text" placeholder="Store Name" value={storeName} onChange={(e)=> setstoreName(e.target.value)}  />
                 </FormControl>
               </Box>
-            <Stack fontSize={7} spacing={1} pt={2}>
+  
               <Button
                 onClick={handleSubmit}
                 size="md"
@@ -187,7 +250,7 @@ export default function AdminSignup() {
               >
                 Sign up
               </Button>
-            </Stack>
+
             <Stack pt={3}>
               <Text align={"center"} fontSize={14} >
                 Already a user? <Link style={{color:"blue"}} to="/admin/login">Login</Link>

@@ -20,8 +20,7 @@ import {
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import Footer from "../../Components/Footer";
 
 export default function UserSignup() {
@@ -30,6 +29,7 @@ export default function UserSignup() {
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
   const [phoneNumber, setContact] = useState("");
+  let navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   // let user = [];
@@ -41,11 +41,12 @@ export default function UserSignup() {
       email,
       password,
       gender,
-      phoneNumber,
+      phoneNumber:Number(phoneNumber)
     };
     if(!payload.name){
 
       toast({
+        position:"top",
         title: "Please fill your Name",
         description: "Your name is missing",
         status: "error",
@@ -57,6 +58,7 @@ export default function UserSignup() {
     else if(!payload.email){
 
       toast({
+        position:"top",
         title: "Please fill your Email",
         description: "Your email is missing",
         status: "error",
@@ -68,6 +70,7 @@ export default function UserSignup() {
     else if(!payload.password){
 
       toast({
+        position:"top",
         title: "Please fill your Password",
         description: "Your password is missing",
         status: "error",
@@ -80,18 +83,23 @@ export default function UserSignup() {
     console.log(payload);
     // console.log(typeof(payload.phoneNumber))
     {
+    console.log(payload)
+    axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/register",payload)
+      .then((res) =>{
+        toast({
+          position:"top",
+          title: `${res.data.message}`,
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
 
-      toast({
-      title: "Your account is created",
-      description: "We've created your account for you.",
-      status: "success",
-      duration: 4000,
-      isClosable: true,
-    });
-    <Link style={{color:"blue"}} to="/login">Login</Link>
-    return axios
-      .post("https://doubtful-wasp-cowboy-boots.cyclic.app/register", payload)
-      .then((res) => console.log(res.data.message))
+        setTimeout (() => {
+          navigate("/login")
+        },3000)
+      }
+       )
       
     }
   };
@@ -99,8 +107,7 @@ export default function UserSignup() {
   return (
     <>
     <Flex
-      minH={"80vh"}
-      
+      minH={"100vh"}
       align={"center"}
       justify={"center"}
       bgGradient="radial(gray.100, green.100, pink.200)"
@@ -176,15 +183,17 @@ export default function UserSignup() {
               </InputGroup>
             </FormControl>
             <Box>
-                <FormControl id="contact">
+                <FormControl id="contact" isRequired>
                   <FormLabel>Contact</FormLabel>
-                  <Input    size="md" fontSize={15}  type="tel" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact(+(e.target.value))}  />
+                  <Input size="md" fontSize={15}  type="number" placeholder="Enter your Contact" value={phoneNumber} onChange={(e)=> setContact((e.target.value))}  />
                 </FormControl>
               </Box>
 
+              <FormControl isRequired >
+              <FormLabel>Gender</FormLabel>
             <Select
+              mb="15px"
              fontSize={15}
-              ml={-10}
               placeholder="Select Gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
@@ -193,22 +202,13 @@ export default function UserSignup() {
               <option value="female">Female</option>
               <option value="other">Prefer not to say</option>
             </Select>
-            <Stack fontSize={7} spacing={1} pt={2}>
-              <Button
-                onClick={handleSubmit}
-                size="md"
-                
-                bg={"blue.400"}
-                colorScheme="teal"
-                _hover={{
-                  bg: "blue.500",
-                }}
-              >
-                Sign up
-              </Button>
-            </Stack>
+
+            </FormControl>
+
+            <Button onClick={handleSubmit} size="md" bg={"blue.400"} colorScheme="teal" _hover={{bg: "blue.500",}} type="submit">Sign up</Button>
+
             <Stack pt={1}>
-              <Text align={"center"} fontSize={10}>
+              <Text align={"center"} fontSize={14}>
                 Already a user? <Link style={{color:"blue"}} to="/login">Login</Link>
               </Text>
             </Stack>

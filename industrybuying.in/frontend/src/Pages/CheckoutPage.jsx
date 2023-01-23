@@ -119,7 +119,7 @@ function CheckoutPage() {
     <Navbar/>
 
 
-    <Box display={"flex"} mt="90px" mb="20px" >
+    <Box display={"flex"} mt="90px" >
       <Box
         ml="30px"
         w="70%"

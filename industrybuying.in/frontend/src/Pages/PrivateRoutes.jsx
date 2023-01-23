@@ -1,13 +1,20 @@
 import React from 'react'
-// import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from 'react-router-dom';
+
 
 const PrivateRoutes =({children}) => {
 
-const token = JSON.parse(localStorage.getItem("token")) || "" ;
+    const navigate = useNavigate()
 
-// if(token === undefined) {
-//     return <Navigate to="login"/>
-// }
+let token = JSON.parse(localStorage.getItem("token")) || "" ;
+
+console.log(token, "private route")
+
+if(token == "" || token == undefined) {
+    console.log(token, "private route11")
+    // return navigate("/login")
+   return <Navigate to="/login"/>
+}
 
 return children
 };

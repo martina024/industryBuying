@@ -16,6 +16,7 @@ import UserLogin from './User/UserLogin'
 import UserSignup from './User/UserSignup'
 
 const AllRoutes = () => {
+
   return (
    
         <Routes>
@@ -29,7 +30,7 @@ const AllRoutes = () => {
             <Route path="/signup" element={<UserSignup/>} />
             <Route path="/admin/login" element={<AdminLogin/>} />
             <Route path="/admin/signup" element={<AdminSignup/>} />
-            <Route path="/admin/dashboard" element={<AdminDashboard/>} />
+            <Route path="/admin/dashboard" element={<AdminPrivateRoutes><AdminDashboard/></AdminPrivateRoutes>} />
             <Route path="/admin/allproducts" element={<AdminPrivateRoutes><AdminAllProducts/></AdminPrivateRoutes>} />
         </Routes>
       

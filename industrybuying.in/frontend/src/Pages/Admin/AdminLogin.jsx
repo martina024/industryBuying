@@ -10,11 +10,16 @@ import {
   useColorMode,
   useColorModeValue,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import {Link, Navigate} from "react-router-dom"
+import { Link, Navigate, useNavigate} from "react-router-dom"
 
 const Login = () => {
+
+  const navigate = useNavigate()
+  // const token = JSON.parse(localStorage.getItem("token")) || "";
+  // const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
 
   const toast = useToast()
   const { toggleColorMode } = useColorMode();
@@ -22,19 +27,21 @@ const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [value, setValue] = React.useState(false)
-  const handleSubmit = () => {
-    let box = localStorage.getItem("token")
-    console.log(box)
-    const payload = {
 
+
+
+
+  const handleSubmit = () => {
+
+    const payload = {
       email,
       password,
-
     };
 
     if (!payload.email) {
 
       toast({
+        position:"top",
         title: "Please fill your Email",
         description: "Your email is missing",
         status: "error",
@@ -46,6 +53,7 @@ const Login = () => {
     else if (!payload.password) {
 
       toast({
+        position:"top",
         title: "Please fill your Password",
         description: "Your password is missing",
         status: "error",
@@ -55,30 +63,36 @@ const Login = () => {
     
     }
 
-    // console.log(payload);
-else{
+    console.log(payload);
+{
 
    
-      axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/login", payload)
+      axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/login",payload)
       .then(res=>{
-        localStorage.setItem("token",JSON.stringify(res.data.token))
-        console.log(res.data.token);
+        localStorage.setItem("adminToken",JSON.stringify(res.data.token))
+        localStorage.setItem("GSTIN", JSON.stringify(res.data.GSTIN))
+        console.log(res.data,"token in login");
         if(res.data.token){
-          <Link to="/"></Link>
           toast({
+            position:"top",
             title: "Your are successfully logged in",
             description: "Taking you to Admin Dashboard",
             status: "success",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           });
+
+          setTimeout(() => {
+            navigate("/admin/dashboard")
+          },3000)
         }
         else{
           toast({
+            position:"top",
             title: "Invalid email/password",
             description: "Please write correct email / password",
             status: "error",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           });
 
@@ -118,6 +132,11 @@ else{
         <Button colorScheme="teal" mb={8} onClick={handleSubmit} >
           Log In
         </Button>
+
+        <Flex gap={"8px"} mb="12px">
+          <Text>Signup Here</Text>
+          <Text color={"blue"}><Link to={"/signup"}>Signup</Link></Text>
+        </Flex>
         <FormControl display="flex" alignItems="center">
           <FormLabel htmlFor="dark_mode" mb="0">
             Enable Dark Mode?
@@ -129,8 +148,6 @@ else{
             onChange={toggleColorMode}
           />
         </FormControl>
-
-        <Link href="/admin/dashboard" style={{textDecoration:"none"}} >ADMIN DASHBOARD</Link>
       </Flex>
     </Flex>
   );
