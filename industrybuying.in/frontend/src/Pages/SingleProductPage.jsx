@@ -20,6 +20,8 @@ import axios from "axios";
 import { ChevronRightIcon, StarIcon } from '@chakra-ui/icons'
 import { SiMastercard, SiVisa } from "react-icons/si";
 import { BsShieldFillCheck } from "react-icons/bs";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 
 
@@ -108,7 +110,7 @@ const handleQuantity=(id)=>
 
   return (
     <>
-    {/* <Navbar/> */}
+    <Navbar/>
     <Box mt={"18px"} b="1px solid red">
       <br />
       {/* Top head line */}
@@ -468,7 +470,7 @@ const handleQuantity=(id)=>
         </Box>
       </Box>
     </Box>
-   {/* <Footer/> */}
+   <Footer/>
     </>
   );
 };

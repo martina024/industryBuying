@@ -14,17 +14,19 @@ import {
   useColorMode,
   Switch,
   useToast,
+  Container,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import image from '../User/logo.jpg'
-import {Link, Navigate, useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
+import Navbar from '../../Components/Navbar';
+import Footer from '../../Components/Footer';
 export default function UserLogin() {
   const navigate=useNavigate()
   const toast=useToast()
   const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue('gray.100', 'gray.700');
-  let flag=false
  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +41,7 @@ export default function UserLogin() {
     if(!payload.email){
 
       toast({
+        position:"top",
         title: "Please fill your Email",
         description: "Your email is missing",
         status: "error",
@@ -50,6 +53,7 @@ export default function UserLogin() {
     else if(!payload.password){
 
       toast({
+        position:"top",
         title: "Please fill your Password",
         description: "Your password is missing",
         status: "error",
@@ -60,37 +64,34 @@ export default function UserLogin() {
     }
     
     console.log(payload);
-    //if successfull
+
     {
 
-    //   toast({
-    //   title: "Your are successfully logged in",
-    //   status: "success",
-    //   duration: 4000,
-    //   isClosable: true,
-    // });
-     axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/login", payload)
+     axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/login",payload)
       .then(res=>{
-       flag=true;
         localStorage.setItem("token",JSON.stringify(res.data.token))
         console.log(res.data);
         if(res.data.token){
-        
           toast({
+            position:"top",
             title: "Your are successfully logged in",
             description: "Taking you to homepage",
             status: "success",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           })
-          return <Navigate to ="/" />
+          
+          setTimeout (() => {
+            navigate('/')
+          },3000)
         }
         else{
           toast({
+            position:"top",
             title: "Invalid email/password",
             description: "Please write correct email / password",
             status: "error",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           });
 
@@ -101,6 +102,10 @@ export default function UserLogin() {
     }
   };
   return (
+
+    <>
+   <Navbar/>
+
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
    
         <Flex h="100vh" alignItems="center" justifyContent="center" w="60%">
@@ -152,5 +157,9 @@ export default function UserLogin() {
         />
       </Flex>
     </Stack>
+
+    <Footer/>
+
+    </>
   );
 }

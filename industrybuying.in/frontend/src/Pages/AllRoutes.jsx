@@ -6,6 +6,7 @@ import AdminLogin from './Admin/AdminLogin'
 import AdminPrivateRoutes from './Admin/AdminPrivateRoute'
 import AdminSignup from './Admin/AdminSignup'
 import CartPage from './CartPage'
+import CheckoutPage from './CheckoutPage'
 import DisplayAllProducts from './DisplayAllProducts'
 import HomePage from './HomePage'
 import Payment from './Payment'
@@ -19,15 +20,16 @@ const AllRoutes = () => {
    
         <Routes>
             <Route path="/" element={<HomePage/>} />
-            {/* <Route path="/allproducts" element={<DisplayAllProducts/>} /> */}
-            {/* <Route path="/product/:id" element={<SingleProductPage/>} /> */}
+            <Route path="/allproducts" element={<DisplayAllProducts/>} />
+            <Route path="/product/:id" element={<SingleProductPage/>} />
             <Route path="/cart" element={<PrivateRoutes><CartPage/></PrivateRoutes>} />
+            <Route path="/cart/checkout" element={<PrivateRoutes><CheckoutPage/></PrivateRoutes>} />
             <Route path="/payment" element={<PrivateRoutes><Payment/></PrivateRoutes>} />
             <Route path="/login" element={<UserLogin/>} />
             <Route path="/signup" element={<UserSignup/>} />
             <Route path="/admin/login" element={<AdminLogin/>} />
             <Route path="/admin/signup" element={<AdminSignup/>} />
-            <Route path="/admin/dashboard" element={<AdminPrivateRoutes><AdminDashboard/></AdminPrivateRoutes>} />
+            <Route path="/admin/dashboard" element={<AdminDashboard/>} />
             <Route path="/admin/allproducts" element={<AdminPrivateRoutes><AdminAllProducts/></AdminPrivateRoutes>} />
         </Routes>
       

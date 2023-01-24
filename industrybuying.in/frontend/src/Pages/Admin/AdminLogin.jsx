@@ -12,29 +12,35 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import {Link, Navigate} from "react-router-dom"
+import { Navigate, useNavigate} from "react-router-dom"
 
 const Login = () => {
+
+  const navigate = useNavigate()
+  // const token = JSON.parse(localStorage.getItem("token")) || "";
+  // const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
 
   const toast = useToast()
   const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue('gray.100', 'gray.700');
-  const [email, setEmail] = React.useState("eve.holt@reqres.in");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [value, setValue] = React.useState(false)
-  const handleSubmit = () => {
-    let box = localStorage.getItem("token")
-    console.log(box)
-    const payload = {
 
+
+
+
+  const handleSubmit = () => {
+
+    const payload = {
       email,
       password,
-
     };
 
     if (!payload.email) {
 
       toast({
+        position:"top",
         title: "Please fill your Email",
         description: "Your email is missing",
         status: "error",
@@ -46,6 +52,7 @@ const Login = () => {
     else if (!payload.password) {
 
       toast({
+        position:"top",
         title: "Please fill your Password",
         description: "Your password is missing",
         status: "error",
@@ -55,30 +62,36 @@ const Login = () => {
     
     }
 
-    // console.log(payload);
-else{
+    console.log(payload);
+{
 
    
-      axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/login", payload)
+      axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/login",payload)
       .then(res=>{
         localStorage.setItem("token",JSON.stringify(res.data.token))
-        console.log(res.data.token);
+        localStorage.setItem("token", JSON.stringify(res.data.GSTIN))
+        console.log(res.data,"token in login");
         if(res.data.token){
-          <Link to="/"></Link>
           toast({
+            position:"top",
             title: "Your are successfully logged in",
             description: "Taking you to Admin Dashboard",
             status: "success",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           });
+
+          setTimeout(() => {
+            navigate("/admin/dashboard")
+          },3000)
         }
         else{
           toast({
+            position:"top",
             title: "Invalid email/password",
             description: "Please write correct email / password",
             status: "error",
-            duration: 4000,
+            duration: 3000,
             isClosable: true,
           });
 

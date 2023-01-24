@@ -24,7 +24,8 @@ import {
 } from "@chakra-ui/react";
 import { SingleItem } from "./CartPage";
 import axios from "axios";
-
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 function CheckoutPage() {
   const [Cart_Data, set_Cart_Data] = useState([]);
@@ -63,7 +64,6 @@ function CheckoutPage() {
     ).then((res)=>{
    set_Cart_Data(res.data)
       console.log(res);
-
     })
    
   };
@@ -114,7 +114,12 @@ function CheckoutPage() {
     // Perform form submission logic here, such as sending data to an API or server
   };
   return (
-    <Box display={"flex"} mt="60px">
+    <>
+
+    <Navbar/>
+
+
+    <Box display={"flex"} mt="90px" >
       <Box
         ml="30px"
         w="70%"
@@ -382,11 +387,16 @@ function CheckoutPage() {
         </VStack>
       </Box>
     </Box>
+
+      <Footer/>
+    </>
   );
 }
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2M2NiYmM5OWFhYTZkZTRmNGU4ZDJjOGMiLCJpYXQiOjE2NzQyOTY1MDd9.barY9qnmDOK4I4ZwOOS7olVvQv8PxmDgVb2et-ipLCc"
-export { CheckoutPage };
+export default CheckoutPage ;
+
+
 const CheckForm1 = ({ setStep, setprogress, Cart_Data }) => {
   const handle1 = () => {
     setStep((stp) => stp - 1);

@@ -1,27 +1,47 @@
-import React from 'react'
+import { Box, Button, HStack, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import PopoverForm from "../../Components/Admin/UpdateProduct";
+import Footer from "../../Components/Footer";
+import Navbar from "../../Components/Navbar";
+
 
 const AdminDashboard = () => {
   const [products, setproducts] = useState([]);
+
+  const token = JSON.parse(localStorage.getItem("token")) || ""
+  localStorage.setItem("GSTIN", JSON.stringify("asdc435"))
+  const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
+
+  // console.log(token , "token",GSTIN, "Gstin")
+
   const toast=useToast()
   const [data, setdata] = useState({
-    price: 0,
+    title: "",
+    price: "",
+    quantity: 0,
     brand: "",
     category: "",
-    title: "",
-    images: [],
+    sub_category:"",
+    images:[]
   });
-
   const handleSubmit=()=>{
-    if( data.price>0&&
-      data.brand!==""&&
-      data.category!==""&&
-      data.title!==""&&data.images!==[]){
-// axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products`,data,{ 
-// headers:{
-//   Authorization:localStorage.getItem("token"),
-//      gstIN:item.GST
-// },
-//  }).then((res)=>{
+  
+    if( data.title && data.price && data.brand && data.category && data.sub_category && data.images.length>0){
+
+
+    // console.log(data, "m")
+
+          axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
+         headers: {
+           Authorization:'Bearer'+" "+token,
+           gstin: GSTIN
+         }
+        })
+          .then(res=>{
+            // console.log(res)
+            // navigate("/cart")
+    
         toast({
           title: "Add Data",
           description: "Product Added Succesfully",
@@ -30,13 +50,7 @@ const AdminDashboard = () => {
           duration: 2000,
           isClosable: true,
         });
-      // })
-        setdata({
-          price: 0,
-          brand: "",
-          category: "",
-          title: "",
-          images: [],})
+      })
       }else {
         toast({
           title: "Add Data",
@@ -53,12 +67,16 @@ const AdminDashboard = () => {
     let val;
     if (e.target.name == "images") {
       val = [{ image_url: value }];
-    } else {
+    } 
+    else if(name=="price"){
+      val = Number(value)
+    }
+    else {
       val = value;
     }
     setdata({ ...data, [name]: val });
   };
-  console.log(data);
+  // console.log(data);
   const Get_All_Cart_Data = async () => {
     // console.log("data")
     let res = await axios.get(
@@ -68,31 +86,42 @@ const AdminDashboard = () => {
     // console.log(res.data.data.data);
   };
   const handleDelete=(item)=>{
-//     console.log(item)
-//   axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${}`,{
- 
-// headers:{
-//   Authorization:localStorage.getItem("token"),
-    //  gstIN:item.GST
-// },
-//  }).then((res)=>{
-//    toast({
-//     title: "Delete Data",
-//     description: "Product Delete Succesfully",
-//     status: "success",
-//     position: "top",
-//     duration: 2000,
-//     isClosable: true,
-//   });
-//    })
+//     const removedata = products.filter((ele) => ele._id !== item._id);
+// setproducts(removedata)
+  //  console.log(item)
+      axios.delete(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/delete/${item}`,{
+     headers: {
+       Authorization: 'Bearer'+" "+token,
+       GSTIN: GSTIN
+     }
+    })
+   
+      .then(res=>{
+        console.log(res.data)
+           toast({
+            title: "Delete Data",
+            description: "Product Delete Succesfully",
+            status: "success",
+            position: "top",
+            duration: 2000,
+            isClosable: true,
+          });
+      })
+      .catch(err=>console.log(err))
+
   }
-  const handleUpdate=()=>{}
+  const handleUpdate=(id)=>{
+    console.log("amit",id)
+  }
   useEffect(() => {
     Get_All_Cart_Data();
   }, []);
   return (
-    <Box display={"flex"} >
-      <Box  w="30%"  m="10px"  boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" h="350px"p="20px" >
+    <>
+    <Navbar/>
+
+    <Box display={"flex"} mt="90px">
+      <Box  w="30%"  m="10px"  boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px" h="380px"p="20px" >
         <Input mb="10px"
           onChange={handleChange}
           name="brand"
@@ -115,6 +144,14 @@ const AdminDashboard = () => {
           <option value="Electrical">Electrical</option>
           <option value="IT & Electronics">IT & Electronics</option>
         </Select>
+
+        <Input  mb="10px"
+          onChange={handleChange}
+          type="url"
+          name="sub_category"
+          placeholder="Enter Subcategory"
+        />
+        
         <Input  mb="10px"
           onChange={handleChange}
           type="number"
@@ -127,6 +164,7 @@ const AdminDashboard = () => {
           name="images"
           placeholder="Enter Url"
         />
+
         <Button m="auto" onClick={handleSubmit}>ADD</Button>
       </Box>
       <Box w="70%" style={{ height: "500px", overflowY: "scroll" }} m="10px">
@@ -146,15 +184,18 @@ const AdminDashboard = () => {
               <Text>{item.brand}</Text>
               <Text>{item.price}</Text>
             </VStack>
-            <VStack w="30%" m="auto">
-              {" "}
-              <Button onClick={()=>handleDelete(item)}>DELETE</Button>
-              <Button onClick={()=>handleUpdate(item)}>UPDATE</Button>
-            </VStack>
+            <HStack gap="15px" w="30%" m="auto">
+              <Button onClick={()=>handleDelete(item._id)}>DELETE</Button>
+              {/* <Button onClick={() =>handleUpdate(item._id)}>Edit</Button> */}
+              <Box onClick={() => handleUpdate(item._id)}><PopoverForm /></Box>
+            </HStack>
           </Box>
         ))}
       </Box>
     </Box>
+
+    <Footer/>
+    </>
   );
 }
 
