@@ -15,11 +15,12 @@ import {
   Switch,
   useToast,
   Container,
+  Text,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import image from '../User/logo.jpg'
-import {useNavigate} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import Navbar from '../../Components/Navbar';
 import Footer from '../../Components/Footer';
 export default function UserLogin() {
@@ -136,6 +137,10 @@ export default function UserLogin() {
         <Button colorScheme="teal" mb={8}  onClick={handleSubmit}>
           Log In
         </Button>
+        <Flex gap={"8px"} mb="12px">
+          <Text>Signup Here</Text>
+          <Text color={"blue"}><Link to={"/signup"}>Signup</Link></Text>
+        </Flex>
         <FormControl display="flex" alignItems="center">
           <FormLabel htmlFor="dark_mode" mb="0">
             Enable Dark Mode?

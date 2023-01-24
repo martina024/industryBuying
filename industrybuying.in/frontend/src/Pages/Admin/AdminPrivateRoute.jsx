@@ -3,17 +3,18 @@ import { Navigate } from "react-router-dom";
 
 const AdminPrivateRoutes =({children}) => {
 
-const adminToken = JSON.parse(localStorage.getItem("admintoken")) || "" ;
+    let adminToken = JSON.parse(localStorage.getItem("adminToken")) || "" ;
+    let GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || "" ;
 
-if(adminToken === undefined) {
-    return <Navigate to="/admin/login"/>
+    console.log(adminToken, "private route")
+    
+    if(!adminToken && !GSTIN){
+        // console.log(adminToken, "private route11")
+        // return navigate("/login")
+       return <Navigate to="/admin/login"/>
+    }
+
+    return children
 }
-
-return <Navigate to="/admin/dashboard"/>
-};
-      
-   
-  
-
 
 export default AdminPrivateRoutes

@@ -35,8 +35,6 @@ const SingleProduct = () => {
   const navigate=useNavigate()
   const {images} = data;
 
-  localStorage.setItem("token", JSON.stringify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklEIjoiNjNjY2U3OTQyZWIxMzcwNTExNjBkOWFlIiwiaWF0IjoxNjc0MzczMDIwfQ.0EX_bCtlzNzf9hIKSR0dCrh3u1g-Fvx7DWc5AfNj8ng"))
-
   const token = JSON.parse(localStorage.getItem("token")) || ""
 
   const getData = () => {

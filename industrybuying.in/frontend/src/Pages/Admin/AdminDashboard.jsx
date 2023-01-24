@@ -1,7 +1,8 @@
 import { Box, Button, HStack, Image, Input, Select, Text, useToast, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import PopoverForm from "../../Components/Admin/UpdateProduct";
+import UpdateProduct from "../../Components/Admin/UpdateProduct";
+
 import Footer from "../../Components/Footer";
 import Navbar from "../../Components/Navbar";
 
@@ -9,8 +10,7 @@ import Navbar from "../../Components/Navbar";
 const AdminDashboard = () => {
   const [products, setproducts] = useState([]);
 
-  const token = JSON.parse(localStorage.getItem("token")) || ""
-  localStorage.setItem("GSTIN", JSON.stringify("asdc435"))
+  const token = JSON.parse(localStorage.getItem("adminToken")) || ""
   const GSTIN = JSON.parse(localStorage.getItem("GSTIN")) || ""
 
   // console.log(token , "token",GSTIN, "Gstin")
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     if( data.title && data.price && data.brand && data.category && data.sub_category && data.images.length>0){
 
 
-    // console.log(data, "m")
+    console.log(data, "m")
 
           axios.post(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/post`,data,{
          headers: {
@@ -39,19 +39,23 @@ const AdminDashboard = () => {
          }
         })
           .then(res=>{
-            // console.log(res)
+            console.log(res)
             // navigate("/cart")
-    
+            
         toast({
-          title: "Add Data",
+          title: "Add the Product",
           description: "Product Added Succesfully",
           status: "success",
           position: "top",
           duration: 2000,
           isClosable: true,
         });
+
+        Get_All_Cart_Data()
       })
-      }else {
+      }
+      
+      else {
         toast({
           title: "Add Data",
           description: "Please Add All Details",
@@ -98,6 +102,7 @@ const AdminDashboard = () => {
    
       .then(res=>{
         console.log(res.data)
+        
            toast({
             title: "Delete Data",
             description: "Product Delete Succesfully",
@@ -106,13 +111,38 @@ const AdminDashboard = () => {
             duration: 2000,
             isClosable: true,
           });
+
+          Get_All_Cart_Data()
       })
       .catch(err=>console.log(err))
 
   }
-  const handleUpdate=(id)=>{
-    console.log("amit",id)
+
+
+  const updateProducts = (id,price) => {
+    console.log(price)
+
+    axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/update/${id}`,price,{
+      headers: {
+        Authorization: 'Bearer'+" "+token
+      }
+     })
+       .then(res=>{
+         console.log(res.data)
+       })
+       .catch(err=>console.log(err))
   }
+
+
+
+
+
+  const modifyTaskFunc = async (id,price)=>{
+    await updateProducts(id,price)
+    Get_All_Cart_Data();
+  }
+
+  
   useEffect(() => {
     Get_All_Cart_Data();
   }, []);
@@ -186,8 +216,10 @@ const AdminDashboard = () => {
             </VStack>
             <HStack gap="15px" w="30%" m="auto">
               <Button onClick={()=>handleDelete(item._id)}>DELETE</Button>
-              {/* <Button onClick={() =>handleUpdate(item._id)}>Edit</Button> */}
-              <Box onClick={() => handleUpdate(item._id)}><PopoverForm /></Box>
+              <UpdateProduct
+                id={item._id}
+                editFunc={modifyTaskFunc}
+                />
             </HStack>
           </Box>
         ))}

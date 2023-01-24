@@ -10,9 +10,10 @@ import {
   useColorMode,
   useColorModeValue,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { Navigate, useNavigate} from "react-router-dom"
+import { Link, Navigate, useNavigate} from "react-router-dom"
 
 const Login = () => {
 
@@ -68,8 +69,8 @@ const Login = () => {
    
       axios.post("https://doubtful-wasp-cowboy-boots.cyclic.app/admin/login",payload)
       .then(res=>{
-        localStorage.setItem("token",JSON.stringify(res.data.token))
-        localStorage.setItem("token", JSON.stringify(res.data.GSTIN))
+        localStorage.setItem("adminToken",JSON.stringify(res.data.token))
+        localStorage.setItem("GSTIN", JSON.stringify(res.data.GSTIN))
         console.log(res.data,"token in login");
         if(res.data.token){
           toast({
@@ -131,6 +132,12 @@ const Login = () => {
         <Button colorScheme="teal" mb={8} onClick={handleSubmit} >
           Log In
         </Button>
+
+
+        <Flex gap={"8px"} mb="12px">
+          <Text>Signup Here</Text>
+          <Text color={"blue"}><Link to={"/admin/signup"}>Signup</Link></Text>
+        </Flex>
         <FormControl display="flex" alignItems="center">
           <FormLabel htmlFor="dark_mode" mb="0">
             Enable Dark Mode?
