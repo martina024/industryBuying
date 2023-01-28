@@ -119,16 +119,31 @@ const AdminDashboard = () => {
   }
 
 
-  const updateProducts = (id,price) => {
-    console.log(price)
+  const updateProducts = (id,new_price) => {
+    console.log(new_price)
 
-    axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/update/${id}`,price,{
+    let obj ={price:new_price}
+
+    axios.patch(`https://doubtful-wasp-cowboy-boots.cyclic.app/products/update/${id}`,obj,{
       headers: {
-        Authorization: 'Bearer'+" "+token
+        Authorization: 'Bearer'+" "+token,
+        GSTIN:GSTIN
       }
      })
        .then(res=>{
-         console.log(res.data)
+         console.log(res.data,"ma")
+
+         toast({
+          title: "Updated Data",
+          description: "Product Price Updated Succesfully",
+          status: "success",
+          position: "top",
+          duration: 2000,
+          isClosable: true,
+        });
+
+        Get_All_Cart_Data()
+
        })
        .catch(err=>console.log(err))
   }
